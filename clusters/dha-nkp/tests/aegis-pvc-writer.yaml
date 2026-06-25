@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: aegis-pvc-writer
+  namespace: aegis-system
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/component: storage-test
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: writer
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          echo "aegis pvc test ok $(date)" > /data/test.txt
+          cat /data/test.txt
+          sleep 3600
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+      volumeMounts:
+        - name: test-volume
+          mountPath: /data
+  volumes:
+    - name: test-volume
+      persistentVolumeClaim:
+        claimName: aegis-pvc-test

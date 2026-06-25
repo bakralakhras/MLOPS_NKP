@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegis-dummy-app
+  namespace: aegis-system
+  labels:
+    app.kubernetes.io/name: aegis-dummy-app
+    app.kubernetes.io/part-of: aegis
+    aegis.io/component: ingress-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: aegis-dummy-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: aegis-dummy-app
+        app.kubernetes.io/part-of: aegis
+        aegis.io/component: ingress-test
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: hashicorp/http-echo:1.0.0
+          args:
+            - "-text=Aegis Phase 1 ingress test OK"
+            - "-listen=:8080"
+          ports:
+            - containerPort: 8080
+              name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegis-dummy-app
+  namespace: aegis-system
+  labels:
+    app.kubernetes.io/name: aegis-dummy-app
+    app.kubernetes.io/part-of: aegis
+spec:
+  selector:
+    app.kubernetes.io/name: aegis-dummy-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

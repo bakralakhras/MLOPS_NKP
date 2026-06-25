@@ -1,0 +1,10 @@
+.env
+*.env
+*.key
+*.pem
+*.crt
+*.kubeconfig
+kubeconfig
+secrets/
+*.secret.yaml
+.DS_Store

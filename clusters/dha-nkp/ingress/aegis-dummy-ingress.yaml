@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aegis-dummy-app
+  namespace: aegis-system
+  labels:
+    app.kubernetes.io/name: aegis-dummy-app
+    app.kubernetes.io/part-of: aegis
+    aegis.io/component: ingress-test
+spec:
+  ingressClassName: kommander-traefik
+  rules:
+    - host: dummy.aegis.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aegis-dummy-app
+                port:
+                  number: 80

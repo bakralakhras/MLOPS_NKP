@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aegis-pvc-test
+  namespace: aegis-system
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/component: storage-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nutanix-volume
+  resources:
+    requests:
+      storage: 1Gi

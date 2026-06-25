@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aegis-read-only
+  namespace: aegis-system
+rules:
+- apiGroups: ["", "apps", "batch", "networking.k8s.io"]
+  resources: ["pods", "services", "endpoints", "configmaps", "deployments", "replicasets", "jobs", "cronjobs", "ingresses", "events"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aegis-platform-admin-read-only
+  namespace: aegis-system
+subjects:
+- kind: ServiceAccount
+  name: aegis-platform-admin
+  namespace: aegis-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: aegis-read-only
