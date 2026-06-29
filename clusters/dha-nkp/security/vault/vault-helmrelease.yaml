@@ -1,0 +1,78 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vault
+  namespace: aegis-security
+  labels:
+    app.kubernetes.io/name: vault
+    app.kubernetes.io/part-of: aegis
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: vault
+      version: "0.30.1"
+      sourceRef:
+        kind: HelmRepository
+        name: hashicorp
+        namespace: aegis-system
+      interval: 24h
+  values:
+    global:
+      enabled: true
+      tlsDisable: true
+
+    injector:
+      enabled: false
+
+    server:
+      enabled: true
+      image:
+        repository: hashicorp/vault
+        tag: "1.19.0"
+
+      updateStrategyType: "RollingUpdate"
+
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 250m
+        limits:
+          memory: 2Gi
+          cpu: "1"
+
+      dataStorage:
+        enabled: true
+        size: 10Gi
+        storageClass: nutanix-volume
+        accessMode: ReadWriteOnce
+
+      auditStorage:
+        enabled: false
+
+      standalone:
+        enabled: true
+        config: |
+          ui = true
+
+          listener "tcp" {
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+            tls_disable = 1
+          }
+
+          storage "file" {
+            path = "/vault/data"
+          }
+
+      ha:
+        enabled: false
+
+      service:
+        enabled: true
+        type: ClusterIP
+        port: 8200
+        targetPort: 8200
+
+      ingress:
+        enabled: false

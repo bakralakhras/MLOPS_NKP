@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: hashicorp
+  namespace: aegis-system
+  labels:
+    app.kubernetes.io/part-of: aegis
+spec:
+  interval: 24h
+  url: https://helm.releases.hashicorp.com

@@ -8,3 +8,4 @@ resources:
   - rbac/aegis-serviceaccounts.yaml
   - rbac/aegis-basic-rbac.yaml
   - networkpolicies/aegis-default-deny-ingress.yaml
+  - security
