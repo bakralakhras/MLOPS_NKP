@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: aegis-mlops-platform
+  namespace: aegis-system
+spec:
+  interval: 1m
+  url: https://github.com/bakralakhras/MLOPS_NKP.git
+  ref:
+    branch: main
