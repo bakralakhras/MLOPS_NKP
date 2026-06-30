@@ -8,6 +8,11 @@ metadata:
     app.kubernetes.io/part-of: aegis
 spec:
   interval: 10m
+  timeout: 10m
+  install:
+    disableWait: true
+  upgrade:
+    disableWait: true
   chart:
     spec:
       chart: vault
