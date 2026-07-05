@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/name: mlflow
+    app.kubernetes.io/part-of: aegis
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mlflow
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000

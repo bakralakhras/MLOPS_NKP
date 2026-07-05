@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/name: mlflow
+    app.kubernetes.io/part-of: aegis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mlflow
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mlflow
+        app.kubernetes.io/part-of: aegis
+    spec:
+      serviceAccountName: aegis-ml-sa
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16.4
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: mlflow-postgres-credentials
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h mlflow-postgres.aegis-ml.svc.cluster.local -p 5432 -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do
+                echo "waiting for postgres"
+                sleep 5
+              done
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      containers:
+        - name: mlflow
+          image: ghcr.io/mlflow/mlflow:v2.16.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+          envFrom:
+            - secretRef:
+                name: mlflow-postgres-credentials
+            - secretRef:
+                name: mlflow-s3-credentials
+          command:
+            - sh
+            - -c
+            - |
+              pip install --no-cache-dir psycopg2-binary boto3 &&
+              mlflow server \
+                --host 0.0.0.0 \
+                --port 5000 \
+                --backend-store-uri "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@mlflow-postgres.aegis-ml.svc.cluster.local:5432/${POSTGRES_DB}" \
+                --default-artifact-root "s3://aegis-mlflow-artifacts"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
