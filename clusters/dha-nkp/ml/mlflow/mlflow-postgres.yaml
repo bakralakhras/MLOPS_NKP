@@ -80,9 +80,6 @@ spec:
             timeoutSeconds: 5
           securityContext:
             allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
