@@ -79,7 +79,14 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
           securityContext:
+            runAsUser: 0
+            runAsGroup: 0
             allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - CHOWN
+                - FOWNER
+                - DAC_OVERRIDE
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
