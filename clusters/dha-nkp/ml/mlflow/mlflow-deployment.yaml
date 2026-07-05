@@ -17,7 +17,7 @@ spec:
         app.kubernetes.io/name: mlflow
         app.kubernetes.io/part-of: aegis
     spec:
-      serviceAccountName: aegis-ml-sa
+      serviceAccountName: aegis-mlflow
       securityContext:
         seccompProfile:
           type: RuntimeDefault

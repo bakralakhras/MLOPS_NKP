@@ -35,7 +35,7 @@ spec:
         app.kubernetes.io/name: mlflow-postgres
         app.kubernetes.io/part-of: aegis
     spec:
-      serviceAccountName: aegis-ml-sa
+      serviceAccountName: aegis-mlflow
       securityContext:
         fsGroup: 999
         seccompProfile:
