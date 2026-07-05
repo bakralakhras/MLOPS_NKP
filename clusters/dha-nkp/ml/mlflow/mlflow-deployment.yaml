@@ -81,16 +81,18 @@ spec:
             httpGet:
               path: /
               port: 5000
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             periodSeconds: 10
             timeoutSeconds: 5
+            failureThreshold: 30
           livenessProbe:
             httpGet:
               path: /
               port: 5000
-            initialDelaySeconds: 60
+            initialDelaySeconds: 300
             periodSeconds: 20
             timeoutSeconds: 5
+            failureThreshold: 6
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
