@@ -6,3 +6,4 @@ resources:
   - minio-services.yaml
   - minio-statefulset.yaml
   - minio-networkpolicy.yaml
+  - minio-allow-ml-access.yaml
