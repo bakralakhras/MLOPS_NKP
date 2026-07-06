@@ -50,7 +50,7 @@ spec:
                 - ALL
       containers:
         - name: mlflow
-          image: ghcr.io/mlflow/mlflow:v2.16.2
+          image: ghcr.io/bakralakhras/aegis-mlflow:v2.16.2-pg-s3
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -64,7 +64,6 @@ spec:
             - sh
             - -c
             - |
-              pip install --no-cache-dir psycopg2-binary boto3 &&
               mlflow server \
                 --host 0.0.0.0 \
                 --port 5000 \
