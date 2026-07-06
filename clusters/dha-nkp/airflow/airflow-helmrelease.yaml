@@ -1,0 +1,131 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: airflow
+  namespace: aegis-airflow
+spec:
+  interval: 10m
+  timeout: 20m
+  targetNamespace: aegis-airflow
+  install:
+    createNamespace: false
+    remediation:
+      retries: 1
+  upgrade:
+    remediation:
+      retries: 1
+  chart:
+    spec:
+      chart: airflow
+      version: "1.22.0"
+      sourceRef:
+        kind: HelmRepository
+        name: apache-airflow
+        namespace: aegis-system
+      interval: 10m
+  values:
+    fullnameOverride: airflow
+
+    executor: KubernetesExecutor
+    multiNamespaceMode: false
+
+    defaultAirflowRepository: apache/airflow
+    defaultAirflowTag: "3.2.2"
+    airflowVersion: "3.2.2"
+
+    redis:
+      enabled: false
+
+    postgresql:
+      enabled: true
+      primary:
+        persistence:
+          enabled: true
+          storageClass: nutanix-volume
+          size: 10Gi
+
+    pgbouncer:
+      enabled: false
+
+    statsd:
+      enabled: false
+
+    flower:
+      enabled: false
+
+    logs:
+      persistence:
+        enabled: false
+
+    dags:
+      persistence:
+        enabled: false
+      gitSync:
+        enabled: false
+
+    env:
+      - name: AIRFLOW__CORE__LOAD_EXAMPLES
+        value: "False"
+
+    apiServer:
+      replicas: 1
+      service:
+        type: ClusterIP
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+
+    webserver:
+      replicas: 1
+      service:
+        type: ClusterIP
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+
+    scheduler:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+
+    triggerer:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+    dagProcessor:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+    workers:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 1Gi
