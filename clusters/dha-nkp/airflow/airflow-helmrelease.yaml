@@ -5,15 +5,15 @@ metadata:
   namespace: aegis-airflow
 spec:
   interval: 10m
-  timeout: 20m
+  timeout: 30m
   targetNamespace: aegis-airflow
   install:
     createNamespace: false
     remediation:
-      retries: 1
+      retries: 3
   upgrade:
     remediation:
-      retries: 1
+      retries: 3
   chart:
     spec:
       chart: airflow
@@ -57,6 +57,18 @@ spec:
       persistence:
         enabled: false
 
+    triggerer:
+      replicas: 1
+      persistence:
+        enabled: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
     dags:
       persistence:
         enabled: false
@@ -66,6 +78,29 @@ spec:
     env:
       - name: AIRFLOW__CORE__LOAD_EXAMPLES
         value: "False"
+
+    migrateDatabaseJob:
+      enabled: true
+      useHelmHooks: false
+      ttlSecondsAfterFinished: 300
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+    createUserJob:
+      useHelmHooks: false
+      ttlSecondsAfterFinished: 300
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
 
     apiServer:
       replicas: 1
@@ -100,16 +135,6 @@ spec:
         limits:
           cpu: 1000m
           memory: 1Gi
-
-    triggerer:
-      replicas: 1
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
 
     dagProcessor:
       replicas: 1
