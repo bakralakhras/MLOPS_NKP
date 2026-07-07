@@ -73,7 +73,14 @@ spec:
       persistence:
         enabled: false
       gitSync:
-        enabled: false
+        enabled: true
+        repo: https://github.com/bakralakhras/MLOPS_NKP.git
+        branch: main
+        rev: HEAD
+        depth: 1
+        maxFailures: 0
+        subPath: clusters/dha-nkp/airflow/dags
+        wait: 30
 
     env:
       - name: AIRFLOW__CORE__LOAD_EXAMPLES
