@@ -12,3 +12,4 @@ resources:
   - networkpolicies/aegis-default-deny-ingress.yaml
   - security
   - data
+  - networkpolicies/airflow-to-mlflow-minio.yaml
