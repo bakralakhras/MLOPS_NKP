@@ -4,3 +4,4 @@ resources:
   - airflow-helmrepository.yaml
   - airflow-networkpolicy.yaml
   - airflow-helmrelease.yaml
+  - airflow-validation-dags-configmap.yaml

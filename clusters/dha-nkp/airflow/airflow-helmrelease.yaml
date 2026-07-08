@@ -73,14 +73,18 @@ spec:
       persistence:
         enabled: false
       gitSync:
-        enabled: true
-        repo: https://github.com/bakralakhras/MLOPS_NKP.git
-        branch: main
-        rev: HEAD
-        depth: 1
-        maxFailures: 0
-        subPath: clusters/dha-nkp/airflow/dags
-        wait: 30
+        enabled: false
+
+    volumes:
+      - name: airflow-validation-dags
+        configMap:
+          name: airflow-validation-dags
+
+    volumeMounts:
+      - name: airflow-validation-dags
+        mountPath: /opt/airflow/dags/aegis_phase_4_validation_dag.py
+        subPath: aegis_phase_4_validation_dag.py
+        readOnly: true
 
     env:
       - name: AIRFLOW__CORE__LOAD_EXAMPLES
