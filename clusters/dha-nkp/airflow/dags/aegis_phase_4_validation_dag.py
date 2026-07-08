@@ -132,6 +132,6 @@ with mlflow.start_run(run_name="airflow-phase-4-validation") as run:
             ),
         ],
         get_logs=True,
-        is_delete_operator_pod=True,
+        is_delete_operator_pod=False,
         in_cluster=True,
     )
