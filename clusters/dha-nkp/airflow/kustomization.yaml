@@ -5,3 +5,4 @@ resources:
   - airflow-networkpolicy.yaml
   - airflow-helmrelease.yaml
   - airflow-validation-dags-configmap.yaml
+  - airflow-phase5-training-dag-configmap.yaml

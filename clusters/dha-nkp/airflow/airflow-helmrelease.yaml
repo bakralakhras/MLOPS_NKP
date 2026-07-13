@@ -79,11 +79,18 @@ spec:
       - name: airflow-validation-dags
         configMap:
           name: airflow-validation-dags
+      - name: airflow-phase5-training-dag
+        configMap:
+          name: airflow-phase5-training-dag
 
     volumeMounts:
       - name: airflow-validation-dags
         mountPath: /opt/airflow/dags/aegis_phase_4_validation_dag.py
         subPath: aegis_phase_4_validation_dag.py
+        readOnly: true
+      - name: airflow-phase5-training-dag
+        mountPath: /opt/airflow/dags/aegis_phase_5_training_dag.py
+        subPath: aegis_phase_5_training_dag.py
         readOnly: true
 
     env:
