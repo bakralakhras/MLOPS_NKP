@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     MLSERVER_HTTP_PORT=8080 \
     MLSERVER_GRPC_PORT=9000 \
-    MODELS_DIR=/mnt/models
+    MLSERVER_MODELS_DIR=/mnt/models
 
 RUN groupadd --gid 1000 mlserver \
     && useradd \
