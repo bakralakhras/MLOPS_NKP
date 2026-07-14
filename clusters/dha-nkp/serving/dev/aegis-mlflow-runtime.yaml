@@ -1,0 +1,62 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: ServingRuntime
+metadata:
+  name: aegis-mlflow-runtime
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/name: aegis-mlflow-runtime
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "7"
+spec:
+  supportedModelFormats:
+    - name: mlflow
+      version: "2"
+      autoSelect: false
+
+  protocolVersions:
+    - v2
+
+  containers:
+    - name: kserve-container
+      image: ghcr.io/bakralakhras/aegis-mlserver@sha256:29583bfd2080d9ebf98cc7241684b5077927f6135fe4e4642b77bda0bdffd795
+      imagePullPolicy: IfNotPresent
+      workingDir: /tmp
+
+      env:
+        - name: HOME
+          value: /tmp
+
+        - name: MLSERVER_MODEL_IMPLEMENTATION
+          value: mlserver_mlflow.MLflowRuntime
+
+        - name: MLSERVER_HTTP_PORT
+          value: "8080"
+
+        - name: MLSERVER_GRPC_PORT
+          value: "9000"
+
+        - name: MLSERVER_METRICS_DIR
+          value: /tmp/.metrics
+
+        - name: MODELS_DIR
+          value: /mnt/models
+
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 2Gi
+
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        privileged: false
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
