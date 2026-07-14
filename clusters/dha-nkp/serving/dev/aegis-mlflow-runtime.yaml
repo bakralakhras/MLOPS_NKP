@@ -18,7 +18,7 @@ spec:
 
   containers:
     - name: kserve-container
-      image: ghcr.io/bakralakhras/aegis-mlserver@sha256:29583bfd2080d9ebf98cc7241684b5077927f6135fe4e4642b77bda0bdffd795
+      image: ghcr.io/bakralakhras/aegis-mlserver@sha256:5b18e588844b8c76d2f523a84b61ad9079247acb9c85d9093998601f6a628c0b
       imagePullPolicy: IfNotPresent
       workingDir: /tmp
 

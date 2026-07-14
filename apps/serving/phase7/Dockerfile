@@ -22,6 +22,7 @@ RUN python -m pip install --upgrade pip \
          "scikit-learn==1.5.2" \
          "cloudpickle==3.0.0" \
          "protobuf==4.25.3" \
+         "uvloop==0.21.0" \
     && python -m pip check
 
 RUN mkdir -p /mnt/models \
