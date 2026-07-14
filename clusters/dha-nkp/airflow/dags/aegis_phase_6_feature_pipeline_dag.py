@@ -1,0 +1,231 @@
+from __future__ import annotations
+
+from datetime import datetime, timedelta
+
+from airflow import DAG
+from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
+from kubernetes.client import models as k8s
+
+
+IMAGE = (
+    "ghcr.io/bakralakhras/aegis-features@"
+    "sha256:e1b77befb2f409b191af25aa93981e66"
+    "ea7936a766f3bc2099db560313a78e37"
+)
+
+TARGET_NAMESPACE = "aegis-features"
+SERVICE_ACCOUNT = "aegis-feast"
+
+
+def config_env(name: str) -> k8s.V1EnvVar:
+    return k8s.V1EnvVar(
+        name=name,
+        value_from=k8s.V1EnvVarSource(
+            config_map_key_ref=k8s.V1ConfigMapKeySelector(
+                name="aegis-feature-config",
+                key=name,
+            )
+        ),
+    )
+
+
+def secret_env(name: str) -> k8s.V1EnvVar:
+    return k8s.V1EnvVar(
+        name=name,
+        value_from=k8s.V1EnvVarSource(
+            secret_key_ref=k8s.V1SecretKeySelector(
+                name="aegis-feast-s3-credentials",
+                key=name,
+            )
+        ),
+    )
+
+
+COMMON_ENV = [
+    secret_env("AWS_ACCESS_KEY_ID"),
+    secret_env("AWS_SECRET_ACCESS_KEY"),
+    config_env("AWS_DEFAULT_REGION"),
+    config_env("AWS_REGION"),
+    config_env("AWS_EC2_METADATA_DISABLED"),
+    config_env("AWS_ENDPOINT_URL"),
+    config_env("AWS_ENDPOINT_URL_S3"),
+    config_env("AWS_S3_ADDRESSING_STYLE"),
+    config_env("S3_ENDPOINT_URL"),
+    config_env("AEGIS_SILVER_BUCKET"),
+    config_env("AEGIS_FEATURE_BUCKET"),
+    config_env("AEGIS_SILVER_PREFIX"),
+    config_env("AEGIS_FEATURE_PREFIX"),
+    config_env("FEAST_REGISTRY_URI"),
+    config_env("FEAST_FEATURE_SERVICE"),
+    config_env("PYTHONDONTWRITEBYTECODE"),
+    config_env("HOME"),
+    config_env("XDG_CACHE_HOME"),
+]
+
+
+POD_LABELS = {
+    "app.kubernetes.io/name": "aegis-phase6-feature-pipeline",
+    "app.kubernetes.io/part-of": "aegis",
+    "aegis.io/phase": "6",
+    "aegis.io/minio-client": "true",
+}
+
+
+POD_SECURITY_CONTEXT = k8s.V1PodSecurityContext(
+    run_as_non_root=True,
+    run_as_user=10001,
+    run_as_group=10001,
+    fs_group=10001,
+    seccomp_profile=k8s.V1SeccompProfile(
+        type="RuntimeDefault"
+    ),
+)
+
+
+CONTAINER_SECURITY_CONTEXT = k8s.V1SecurityContext(
+    allow_privilege_escalation=False,
+    read_only_root_filesystem=True,
+    capabilities=k8s.V1Capabilities(
+        drop=["ALL"]
+    ),
+)
+
+
+TEMP_VOLUME = k8s.V1Volume(
+    name="temporary-data",
+    empty_dir=k8s.V1EmptyDirVolumeSource(),
+)
+
+
+TEMP_VOLUME_MOUNT = k8s.V1VolumeMount(
+    name="temporary-data",
+    mount_path="/tmp",
+)
+
+
+with DAG(
+    dag_id="aegis_phase_6_feature_pipeline",
+    description=(
+        "Build timestamped Aegis features, apply Feast definitions, "
+        "and validate point-in-time historical retrieval"
+    ),
+    start_date=datetime(2026, 7, 14),
+    schedule=None,
+    catchup=False,
+    max_active_runs=1,
+    default_args={
+        "owner": "aegis-platform",
+        "retries": 1,
+        "retry_delay": timedelta(minutes=2),
+    },
+    tags=[
+        "aegis",
+        "phase-6",
+        "features",
+        "feast",
+        "minio",
+    ],
+) as dag:
+
+    build_features = KubernetesPodOperator(
+        task_id="build_features",
+        name="aegis-phase6-build-features",
+        namespace=TARGET_NAMESPACE,
+        service_account_name=SERVICE_ACCOUNT,
+        automount_service_account_token=False,
+
+        image=IMAGE,
+        image_pull_policy="IfNotPresent",
+        image_pull_secrets=[
+            k8s.V1LocalObjectReference(
+                name="ghcr-bakralakhras"
+            )
+        ],
+
+        env_vars=COMMON_ENV,
+
+        labels={
+            **POD_LABELS,
+            "aegis.io/workload": "feature-engineering",
+        },
+
+        volumes=[TEMP_VOLUME],
+        volume_mounts=[TEMP_VOLUME_MOUNT],
+
+        container_resources=k8s.V1ResourceRequirements(
+            requests={
+                "cpu": "250m",
+                "memory": "512Mi",
+            },
+            limits={
+                "cpu": "1",
+                "memory": "2Gi",
+            },
+        ),
+
+        security_context=POD_SECURITY_CONTEXT,
+        container_security_context=CONTAINER_SECURITY_CONTEXT,
+
+        get_logs=True,
+        in_cluster=True,
+        is_delete_operator_pod=False,
+        reattach_on_restart=True,
+        startup_timeout_seconds=300,
+        execution_timeout=timedelta(minutes=20),
+        do_xcom_push=False,
+    )
+
+    apply_and_validate_feast = KubernetesPodOperator(
+        task_id="apply_and_validate_feast",
+        name="aegis-phase6-validate-feast",
+        namespace=TARGET_NAMESPACE,
+        service_account_name=SERVICE_ACCOUNT,
+        automount_service_account_token=False,
+
+        image=IMAGE,
+        image_pull_policy="IfNotPresent",
+        image_pull_secrets=[
+            k8s.V1LocalObjectReference(
+                name="ghcr-bakralakhras"
+            )
+        ],
+
+        cmds=[
+            "python",
+            "/opt/aegis/phase6/validate_features.py",
+        ],
+
+        env_vars=COMMON_ENV,
+
+        labels={
+            **POD_LABELS,
+            "aegis.io/workload": "feast-validation",
+        },
+
+        volumes=[TEMP_VOLUME],
+        volume_mounts=[TEMP_VOLUME_MOUNT],
+
+        container_resources=k8s.V1ResourceRequirements(
+            requests={
+                "cpu": "500m",
+                "memory": "1Gi",
+            },
+            limits={
+                "cpu": "2",
+                "memory": "3Gi",
+            },
+        ),
+
+        security_context=POD_SECURITY_CONTEXT,
+        container_security_context=CONTAINER_SECURITY_CONTEXT,
+
+        get_logs=True,
+        in_cluster=True,
+        is_delete_operator_pod=False,
+        reattach_on_restart=True,
+        startup_timeout_seconds=300,
+        execution_timeout=timedelta(minutes=30),
+        do_xcom_push=False,
+    )
+
+    build_features >> apply_and_validate_feast

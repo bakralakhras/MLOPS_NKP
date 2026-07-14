@@ -6,3 +6,4 @@ resources:
   - airflow-helmrelease.yaml
   - airflow-validation-dags-configmap.yaml
   - airflow-phase5-training-dag-configmap.yaml
+  - airflow-phase6-feature-pipeline-dag-configmap.yaml

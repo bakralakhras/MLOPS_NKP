@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-features-to-minio
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "6"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+
+  policyTypes:
+    - Ingress
+
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: aegis-features
+          podSelector:
+            matchLabels:
+              aegis.io/minio-client: "true"
+
+      ports:
+        - protocol: TCP
+          port: 9000

@@ -1,0 +1,13 @@
+project: aegis_phase6
+provider: local
+
+registry:
+  path: s3://aegis-features/phase6/registry/registry.pb
+  cache_ttl_seconds: 0
+
+offline_store:
+  type: file
+
+online_store: null
+
+entity_key_serialization_version: 3
