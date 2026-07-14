@@ -11,6 +11,7 @@ metadata:
   annotations:
     serving.kserve.io/deploymentMode: RawDeployment
     serving.kserve.io/secretName: aegis-model-storage
+    aegis.io/runtime-revision: "phase7-v2"
 spec:
   predictor:
     serviceAccountName: aegis-inference
