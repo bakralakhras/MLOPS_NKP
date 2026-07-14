@@ -22,6 +22,7 @@ spec:
       modelFormat:
         name: mlflow
         version: "2"
+      name: aegis-fraud-baseline
 
       runtime: aegis-mlflow-runtime
       protocolVersion: v2
