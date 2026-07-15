@@ -1,0 +1,133 @@
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroDashboard
+metadata:
+  name: aegis-fraud-baseline
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/name: aegis-fraud-baseline
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  content:
+    title: Aegis Fraud Model Serving
+    description: Operational dashboard for the Aegis fraud-detection model served by KServe and MLServer.
+    widgets:
+      - type: stat
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 0
+            w: 6
+            h: 4
+        stat:
+          title: Successful Inferences
+          description: Total successful predictions since the predictor started.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'model_infer_request_success_total{model="aegis-fraud-baseline"}'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute:
+            x: 6
+            "y": 0
+            w: 6
+            h: 4
+        stat:
+          title: Failed Inferences
+          description: Total failed model inference requests.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'model_infer_request_failure_total{model="aegis-fraud-baseline"}'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 4
+            w: 12
+            h: 7
+        chart:
+          title: Inference Request Rate
+          description: Successful and failed inference requests per second.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'rate(model_infer_request_success_total{model="aegis-fraud-baseline"}[5m])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Successful
+              - query: 'rate(model_infer_request_failure_total{model="aegis-fraud-baseline"}[5m])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Failed
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 11
+            w: 6
+            h: 7
+        chart:
+          title: Average Model Latency
+          description: Average model execution time calculated from MLServer metrics.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'rate(model_infer_request_duration_sum{model="aegis-fraud-baseline"}[5m]) / rate(model_infer_request_duration_count{model="aegis-fraud-baseline"}[5m])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Average latency
+                  unitOverride: seconds
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 6
+            "y": 11
+            w: 6
+            h: 7
+        chart:
+          title: P95 HTTP Inference Latency
+          description: 95th percentile HTTP latency for inference requests.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'histogram_quantile(0.95, sum by (le) (rate(rest_server_request_duration_seconds_bucket{method="POST",path="/v2/models/{model_name}/infer"}[5m])))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P95 latency
+                  unitOverride: seconds
+  settings:
+    layoutVersion: 2
+    defaultTimeRange: 1h
+    hideGlobalEnvironmentSelector: false
