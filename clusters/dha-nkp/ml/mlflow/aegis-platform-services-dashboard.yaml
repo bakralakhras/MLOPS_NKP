@@ -1,0 +1,172 @@
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroDashboard
+metadata:
+  name: aegis-platform-services
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/name: aegis-platform-services
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  content:
+    title: Aegis Platform Services
+    description: Operational monitoring for MLflow and the supporting Aegis MLOps platform services.
+    widgets:
+      - type: stat
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 0
+            w: 4
+            h: 4
+        stat:
+          title: MLflow Availability
+          description: Whether MLflow Prometheus metrics are currently available.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'mlflow_exporter_info{version="0.23.1"}'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute:
+            x: 4
+            "y": 0
+            w: 4
+            h: 4
+        stat:
+          title: Total MLflow Requests
+          description: Total HTTP requests handled since MLflow started.
+          expression:
+            queryMode: promql
+            reduceAggregation: sum
+            promQLQuery:
+              query: 'sum(mlflow_http_request_total)'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute:
+            x: 8
+            "y": 0
+            w: 4
+            h: 4
+        stat:
+          title: MLflow Server Errors
+          description: Total MLflow HTTP 5xx responses.
+          expression:
+            queryMode: promql
+            reduceAggregation: sum
+            promQLQuery:
+              query: 'sum(mlflow_http_request_total{status=~"5.."})'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 4
+            w: 12
+            h: 7
+        chart:
+          title: MLflow Request Rate
+          description: HTTP requests per second grouped by response status.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum by (status) (rate(mlflow_http_request_total[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Requests per second
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 11
+            w: 6
+            h: 7
+        chart:
+          title: Average MLflow Latency
+          description: Average HTTP request duration over five minutes.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(rate(mlflow_http_request_duration_seconds_sum[5m])) / clamp_min(sum(rate(mlflow_http_request_duration_seconds_count[5m])), 0.001)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Average latency
+                  unitOverride: seconds
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 6
+            "y": 11
+            w: 6
+            h: 7
+        chart:
+          title: P95 MLflow Latency
+          description: 95th percentile MLflow HTTP request duration.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'histogram_quantile(0.95, sum by (le) (rate(mlflow_http_request_duration_seconds_bucket[5m])))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P95 latency
+                  unitOverride: seconds
+
+      - type: chart
+        position:
+          type: absolute
+          absolute:
+            x: 0
+            "y": 18
+            w: 12
+            h: 7
+        chart:
+          title: MLflow Error Rate
+          description: Percentage of requests returning HTTP 5xx responses.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: '100 * sum(rate(mlflow_http_request_total{status=~"5.."}[5m])) / clamp_min(sum(rate(mlflow_http_request_total[5m])), 0.001)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Error rate
+                  unitOverride: percent
+  settings:
+    layoutVersion: 2
+    defaultTimeRange: 1h
+    hideGlobalEnvironmentSelector: false
