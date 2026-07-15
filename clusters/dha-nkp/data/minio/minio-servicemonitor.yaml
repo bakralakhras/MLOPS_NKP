@@ -17,7 +17,7 @@ spec:
       app.kubernetes.io/name: minio
   endpoints:
     - port: s3
-      path: /minio/metrics/v3
+      path: /minio/v2/metrics/cluster
       scheme: http
       interval: 15s
       scrapeTimeout: 10s
