@@ -48,7 +48,14 @@ spec:
       enabled: false
 
     statsd:
-      enabled: false
+      enabled: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
 
     flower:
       enabled: false

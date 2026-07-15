@@ -1,9 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - airflow-helmrepository.yaml
-  - airflow-networkpolicy.yaml
-  - airflow-helmrelease.yaml
-  - airflow-validation-dags-configmap.yaml
-  - airflow-phase5-training-dag-configmap.yaml
-  - airflow-phase6-feature-pipeline-dag-configmap.yaml
+- airflow-helmrepository.yaml
+- airflow-networkpolicy.yaml
+- airflow-helmrelease.yaml
+- airflow-validation-dags-configmap.yaml
+- airflow-phase5-training-dag-configmap.yaml
+- airflow-phase6-feature-pipeline-dag-configmap.yaml
+- airflow-statsd-servicemonitor.yaml
+- aegis-allow-metoro-to-airflow-metrics.yaml

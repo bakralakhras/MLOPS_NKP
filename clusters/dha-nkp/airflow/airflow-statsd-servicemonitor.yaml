@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: airflow-statsd
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/name: airflow
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  namespaceSelector:
+    matchNames:
+      - aegis-airflow
+  selector:
+    matchLabels:
+      component: statsd
+      release: aegis-airflow-airflow
+      tier: airflow
+  endpoints:
+    - port: statsd-scrape
+      path: /metrics
+      scheme: http
+      interval: 15s
+      scrapeTimeout: 10s
