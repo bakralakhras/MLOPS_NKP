@@ -68,7 +68,8 @@ spec:
                 --host 0.0.0.0 \
                 --port 5000 \
                 --backend-store-uri "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@mlflow-postgres.aegis-ml.svc.cluster.local:5432/${POSTGRES_DB}" \
-                --default-artifact-root "s3://aegis-mlflow-artifacts"
+                --default-artifact-root "s3://aegis-mlflow-artifacts" \
+                --expose-prometheus /tmp/mlflow-prometheus
           resources:
             requests:
               cpu: 250m
