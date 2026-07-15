@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-console
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: console
+    app.kubernetes.io/part-of: aegis
+spec:
+  ingressClassName: kommander-traefik
+  rules:
+    - host: minio.aegis.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-console
+                port:
+                  number: 9001

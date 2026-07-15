@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-traefik-to-minio-console
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/part-of: aegis
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kommander-default-workspace
+      ports:
+        - protocol: TCP
+          port: 9001
