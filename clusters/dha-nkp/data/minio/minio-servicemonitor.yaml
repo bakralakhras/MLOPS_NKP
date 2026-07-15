@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: minio
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  namespaceSelector:
+    matchNames:
+      - aegis-data
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  endpoints:
+    - port: s3
+      path: /minio/metrics/v3
+      scheme: http
+      interval: 15s
+      scrapeTimeout: 10s

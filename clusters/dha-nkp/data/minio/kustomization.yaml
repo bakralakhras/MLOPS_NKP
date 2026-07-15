@@ -1,10 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 resources:
-  - minio-allow-serving-dev.yaml
-  - minio-serviceaccount.yaml
-  - minio-services.yaml
-  - minio-statefulset.yaml
-  - minio-networkpolicy.yaml
-  - minio-allow-ml-access.yaml
+- minio-allow-serving-dev.yaml
+- minio-serviceaccount.yaml
+- minio-services.yaml
+- minio-statefulset.yaml
+- minio-networkpolicy.yaml
+- minio-allow-ml-access.yaml
+- minio-servicemonitor.yaml
+- aegis-allow-metoro-to-minio-metrics.yaml
