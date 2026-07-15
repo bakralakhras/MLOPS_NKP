@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: aegis-fraud-baseline
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/name: aegis-fraud-baseline
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: aegis-fraud-baseline
+      app.kubernetes.io/component: metrics
+  namespaceSelector:
+    matchNames:
+      - aegis-serving-dev
+  endpoints:
+    - port: metrics
+      path: /metrics
+      scheme: http
+      interval: 15s
+      scrapeTimeout: 10s

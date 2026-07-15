@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-metoro-mlserver-metrics
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  podSelector:
+    matchLabels:
+      app: isvc.aegis-fraud-baseline-predictor
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: metoro
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/component: service-monitor-scraper
+      ports:
+        - protocol: TCP
+          port: 8082

@@ -4,3 +4,6 @@ kind: Kustomization
 resources:
   - aegis-mlflow-runtime.yaml
   - aegis-fraud-baseline.yaml
+  - aegis-fraud-baseline-metrics-service.yaml
+  - aegis-fraud-baseline-servicemonitor.yaml
+  - aegis-allow-metoro-mlserver-metrics.yaml

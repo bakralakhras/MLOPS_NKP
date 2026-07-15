@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegis-fraud-baseline-metrics
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/name: aegis-fraud-baseline
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  type: ClusterIP
+  selector:
+    app: isvc.aegis-fraud-baseline-predictor
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 8082
+      targetPort: 8082
