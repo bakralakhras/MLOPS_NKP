@@ -7,17 +7,20 @@ metadata:
     app.kubernetes.io/name: minio
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: aegis
-    aegis.io/phase: "8"
+    aegis.io/phase: '8'
 spec:
   namespaceSelector:
     matchNames:
-      - aegis-data
+    - aegis-data
   selector:
     matchLabels:
       app.kubernetes.io/name: minio
   endpoints:
-    - port: s3
-      path: /minio/v2/metrics/cluster
-      scheme: http
-      interval: 15s
-      scrapeTimeout: 10s
+  - port: s3
+    path: /minio/v2/metrics/cluster
+    scheme: http
+    interval: 15s
+    scrapeTimeout: 10s
+    relabelings:
+    - targetLabel: aegis_component
+      replacement: minio

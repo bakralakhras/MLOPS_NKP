@@ -12,24 +12,20 @@ metadata:
 spec:
   content:
     title: Aegis Platform Services
-    description: Operational monitoring for MLflow and the supporting Aegis MLOps platform services.
+    description: Operational health for MLflow, MinIO, Airflow PostgreSQL, and MLflow PostgreSQL.
     widgets:
       - type: stat
         position:
           type: absolute
-          absolute:
-            x: 0
-            "y": 0
-            w: 4
-            h: 4
+          absolute: {x: 0, "y": 0, w: 3, h: 4}
         stat:
-          title: MLflow Availability
-          description: Whether MLflow Prometheus metrics are currently available.
+          title: MLflow Available
+          description: MLflow metrics endpoint availability.
           expression:
             queryMode: promql
             reduceAggregation: max
             promQLQuery:
-              query: 'mlflow_exporter_info{version="0.23.1"}'
+              query: 'max(mlflow_exporter_info)'
               bucketMode: auto
               autoBucketStrategy: metoro
           displaySettings:
@@ -39,19 +35,15 @@ spec:
       - type: stat
         position:
           type: absolute
-          absolute:
-            x: 4
-            "y": 0
-            w: 4
-            h: 4
+          absolute: {x: 3, "y": 0, w: 3, h: 4}
         stat:
-          title: Total MLflow Requests
-          description: Total HTTP requests handled since MLflow started.
+          title: MinIO Healthy
+          description: MinIO cluster health status.
           expression:
             queryMode: promql
-            reduceAggregation: sum
+            reduceAggregation: min
             promQLQuery:
-              query: 'sum(mlflow_http_request_total)'
+              query: 'min(minio_cluster_health_status{aegis_component="minio"})'
               bucketMode: auto
               autoBucketStrategy: metoro
           displaySettings:
@@ -61,19 +53,33 @@ spec:
       - type: stat
         position:
           type: absolute
-          absolute:
-            x: 8
-            "y": 0
-            w: 4
-            h: 4
+          absolute: {x: 6, "y": 0, w: 3, h: 4}
         stat:
-          title: MLflow Server Errors
-          description: Total MLflow HTTP 5xx responses.
+          title: Airflow Database
+          description: Airflow PostgreSQL exporter database connectivity.
           expression:
             queryMode: promql
-            reduceAggregation: sum
+            reduceAggregation: max
             promQLQuery:
-              query: 'sum(mlflow_http_request_total{status=~"5.."})'
+              query: 'max(pg_up{aegis_component="airflow-postgres"})'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 9, "y": 0, w: 3, h: 4}
+        stat:
+          title: MLflow Database
+          description: MLflow PostgreSQL exporter database connectivity.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'max(pg_up{aegis_component="mlflow-postgres"})'
               bucketMode: auto
               autoBucketStrategy: metoro
           displaySettings:
@@ -83,14 +89,10 @@ spec:
       - type: chart
         position:
           type: absolute
-          absolute:
-            x: 0
-            "y": 4
-            w: 12
-            h: 7
+          absolute: {x: 0, "y": 4, w: 6, h: 7}
         chart:
           title: MLflow Request Rate
-          description: HTTP requests per second grouped by response status.
+          description: MLflow HTTP requests per second by status.
           chartType: line
           expression:
             queryMode: promql
@@ -104,14 +106,10 @@ spec:
       - type: chart
         position:
           type: absolute
-          absolute:
-            x: 0
-            "y": 11
-            w: 6
-            h: 7
+          absolute: {x: 6, "y": 4, w: 6, h: 7}
         chart:
-          title: Average MLflow Latency
-          description: Average HTTP request duration over five minutes.
+          title: MLflow Latency
+          description: Average and p95 HTTP latency.
           chartType: line
           expression:
             queryMode: promql
@@ -120,52 +118,208 @@ spec:
                 bucketMode: auto
                 autoBucketStrategy: metoro
                 displaySettings:
-                  label: Average latency
+                  label: Average
                   unitOverride: seconds
-
-      - type: chart
-        position:
-          type: absolute
-          absolute:
-            x: 6
-            "y": 11
-            w: 6
-            h: 7
-        chart:
-          title: P95 MLflow Latency
-          description: 95th percentile MLflow HTTP request duration.
-          chartType: line
-          expression:
-            queryMode: promql
-            promQLQueries:
               - query: 'histogram_quantile(0.95, sum by (le) (rate(mlflow_http_request_duration_seconds_bucket[5m])))'
                 bucketMode: auto
                 autoBucketStrategy: metoro
                 displaySettings:
-                  label: P95 latency
+                  label: P95
                   unitOverride: seconds
 
       - type: chart
         position:
           type: absolute
-          absolute:
-            x: 0
-            "y": 18
-            w: 12
-            h: 7
+          absolute: {x: 0, "y": 11, w: 6, h: 7}
         chart:
-          title: MLflow Error Rate
-          description: Percentage of requests returning HTTP 5xx responses.
+          title: MinIO Capacity Utilization
+          description: Percentage of usable MinIO capacity currently consumed.
           chartType: line
           expression:
             queryMode: promql
             promQLQueries:
-              - query: '100 * sum(rate(mlflow_http_request_total{status=~"5.."}[5m])) / clamp_min(sum(rate(mlflow_http_request_total[5m])), 0.001)'
+              - query: '100 * (1 - max(minio_cluster_capacity_usable_free_bytes{aegis_component="minio"}) / clamp_min(max(minio_cluster_capacity_usable_total_bytes{aegis_component="minio"}), 1))'
                 bucketMode: auto
                 autoBucketStrategy: metoro
                 displaySettings:
-                  label: Error rate
+                  label: Used capacity
                   unitOverride: percent
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 11, w: 6, h: 7}
+        chart:
+          title: MinIO Cluster Members
+          description: Online and offline MinIO nodes and drives.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(minio_cluster_nodes_online_total{aegis_component="minio"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Online nodes
+              - query: 'max(minio_cluster_nodes_offline_total{aegis_component="minio"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Offline nodes
+              - query: 'max(minio_cluster_drive_online_total{aegis_component="minio"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Online drives
+              - query: 'max(minio_cluster_drive_offline_total{aegis_component="minio"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Offline drives
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 18, w: 6, h: 7}
+        chart:
+          title: MinIO Request Pressure
+          description: Incoming and waiting S3 requests.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(minio_s3_requests_incoming_total{aegis_component="minio"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Incoming
+              - query: 'sum(minio_s3_requests_waiting_total{aegis_component="minio"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Waiting
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 18, w: 6, h: 7}
+        chart:
+          title: MinIO Rejected Requests
+          description: Authentication, invalid, header, and timestamp request rejections.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(rate(minio_s3_requests_rejected_auth_total{aegis_component="minio"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Authentication
+              - query: 'sum(rate(minio_s3_requests_rejected_invalid_total{aegis_component="minio"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Invalid
+              - query: 'sum(rate(minio_s3_requests_rejected_header_total{aegis_component="minio"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Header
+              - query: 'sum(rate(minio_s3_requests_rejected_timestamp_total{aegis_component="minio"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Timestamp
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 25, w: 6, h: 7}
+        chart:
+          title: PostgreSQL Connections
+          description: Active database backends for Airflow and MLflow.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(pg_stat_database_numbackends{aegis_component="airflow-postgres",datname="postgres"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Airflow
+              - query: 'sum(pg_stat_database_numbackends{aegis_component="mlflow-postgres",datname="mlflow"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MLflow
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 25, w: 6, h: 7}
+        chart:
+          title: PostgreSQL Transaction Rate
+          description: Committed database transactions per second.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'rate(pg_stat_database_xact_commit{aegis_component="airflow-postgres",datname="postgres"}[5m])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Airflow
+              - query: 'rate(pg_stat_database_xact_commit{aegis_component="mlflow-postgres",datname="mlflow"}[5m])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MLflow
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 32, w: 6, h: 7}
+        chart:
+          title: PostgreSQL Deadlocks
+          description: Deadlocks observed by each application database.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'increase(pg_stat_database_deadlocks{aegis_component="airflow-postgres",datname="postgres"}[1h])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Airflow
+              - query: 'increase(pg_stat_database_deadlocks{aegis_component="mlflow-postgres",datname="mlflow"}[1h])'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MLflow
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 32, w: 6, h: 7}
+        chart:
+          title: PostgreSQL Database Size
+          description: Current application database sizes.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(pg_database_size_bytes{aegis_component="airflow-postgres",datname="postgres"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Airflow
+                  unitOverride: bytes
+              - query: 'max(pg_database_size_bytes{aegis_component="mlflow-postgres",datname="mlflow"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MLflow
+                  unitOverride: bytes
   settings:
     layoutVersion: 2
     defaultTimeRange: 1h
