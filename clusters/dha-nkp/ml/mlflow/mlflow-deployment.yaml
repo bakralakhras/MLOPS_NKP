@@ -50,7 +50,7 @@ spec:
                 - ALL
       containers:
         - name: mlflow
-          image: ghcr.io/bakralakhras/aegis-mlflow:v2.16.2-pg-s3-prometheus-v1-prometheus-v1
+          image: ghcr.io/bakralakhras/aegis-mlflow:v2.16.2-pg-s3-prometheus-v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
