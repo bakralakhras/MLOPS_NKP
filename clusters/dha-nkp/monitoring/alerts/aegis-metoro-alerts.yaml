@@ -104,7 +104,7 @@ spec:
   timeseries:
     expression:
       metoroQLTimeseries:
-        query: 'sum(increase(airflow_scheduler_heartbeat[5m]))'
+        query: 'sum(increase(airflow_scheduler_heartbeat[5m])) or vector(0)'
         bucketSize: 60
     evaluationRules:
       - name: Scheduler heartbeat absent
