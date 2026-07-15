@@ -1,0 +1,278 @@
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroDashboard
+metadata:
+  name: aegis-platform-overview
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/name: aegis-platform-overview
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  content:
+    title: Aegis Platform Overview
+    description: Executive operational view of model serving, pipelines, storage, tracking, and databases.
+    widgets:
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 0, w: 2, h: 4}
+        stat:
+          title: Model Success
+          description: Successful inference requests.
+          expression:
+            queryMode: promql
+            reduceAggregation: sum
+            promQLQuery:
+              query: 'sum(model_infer_request_success_total{model="aegis-fraud-baseline"})'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 2, "y": 0, w: 2, h: 4}
+        stat:
+          title: Model Failures
+          description: Failed inference requests.
+          expression:
+            queryMode: promql
+            reduceAggregation: sum
+            promQLQuery:
+              query: 'sum(model_infer_request_failure_total{model="aegis-fraud-baseline"})'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 4, "y": 0, w: 2, h: 4}
+        stat:
+          title: Scheduler
+          description: Airflow scheduler heartbeat observed during the last five minutes.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'sum(increase(airflow_scheduler_heartbeat[5m])) > bool 0'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 0, w: 2, h: 4}
+        stat:
+          title: MLflow
+          description: MLflow metrics endpoint availability.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'max(mlflow_exporter_info)'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 8, "y": 0, w: 2, h: 4}
+        stat:
+          title: MinIO
+          description: MinIO cluster health.
+          expression:
+            queryMode: promql
+            reduceAggregation: min
+            promQLQuery:
+              query: 'min(minio_cluster_health_status{aegis_component="minio"})'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 10, "y": 0, w: 2, h: 4}
+        stat:
+          title: Databases
+          description: Number of healthy Aegis PostgreSQL databases.
+          expression:
+            queryMode: promql
+            reduceAggregation: sum
+            promQLQuery:
+              query: 'sum(pg_up{aegis_component=~"airflow-postgres|mlflow-postgres"})'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 4, w: 6, h: 7}
+        chart:
+          title: Inference Traffic
+          description: Successful and failed model requests per second.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(rate(model_infer_request_success_total{model="aegis-fraud-baseline"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Successful
+              - query: 'sum(rate(model_infer_request_failure_total{model="aegis-fraud-baseline"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Failed
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 4, w: 6, h: 7}
+        chart:
+          title: Inference P95 Latency
+          description: 95th percentile inference HTTP latency.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'histogram_quantile(0.95, sum by (le) (rate(rest_server_request_duration_seconds_bucket{method="POST"}[5m])))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P95 latency
+                  unitOverride: seconds
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 11, w: 6, h: 7}
+        chart:
+          title: Airflow Executor
+          description: Running, queued, and available executor capacity.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_executor_running_tasks)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Running
+              - query: 'max(airflow_executor_queued_tasks)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Queued
+              - query: 'max(airflow_executor_open_slots)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Open slots
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 11, w: 6, h: 7}
+        chart:
+          title: Service Error Signals
+          description: MLflow 5xx responses and rejected MinIO requests.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(rate(mlflow_http_request_total{status=~"5.."}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MLflow 5xx
+              - query: 'sum(rate(minio_s3_requests_rejected_auth_total{aegis_component="minio"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MinIO auth rejected
+              - query: 'sum(rate(minio_s3_requests_rejected_invalid_total{aegis_component="minio"}[5m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MinIO invalid
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 18, w: 6, h: 7}
+        chart:
+          title: MinIO Capacity
+          description: Percentage of usable storage consumed.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: '100 * (1 - max(minio_cluster_capacity_usable_free_bytes{aegis_component="minio"}) / clamp_min(max(minio_cluster_capacity_usable_total_bytes{aegis_component="minio"}), 1))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Used capacity
+                  unitOverride: percent
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 18, w: 6, h: 7}
+        chart:
+          title: PostgreSQL Connections
+          description: Active Airflow and MLflow database connections.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum(pg_stat_database_numbackends{aegis_component="airflow-postgres",datname="postgres"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Airflow DB
+              - query: 'sum(pg_stat_database_numbackends{aegis_component="mlflow-postgres",datname="mlflow"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: MLflow DB
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 25, w: 12, h: 7}
+        chart:
+          title: Aegis Pod Restarts
+          description: Container restarts across all Aegis namespaces during the last hour.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum by (namespace) (increase(kube_pod_container_status_restarts_total{namespace=~"aegis-.*"}[1h]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Restarts
+  settings:
+    layoutVersion: 2
+    defaultTimeRange: 1h
+    hideGlobalEnvironmentSelector: false
