@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mlflow
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/name: mlflow
+    app.kubernetes.io/part-of: aegis
+    app.kubernetes.io/component: monitoring
+    aegis.io/phase: "8"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mlflow
+  namespaceSelector:
+    matchNames:
+      - aegis-ml
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+      scheme: http

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-metoro-to-mlflow-metrics
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/part-of: aegis
+    app.kubernetes.io/component: monitoring
+    aegis.io/phase: "8"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mlflow
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: metoro
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/component: service-monitor-scraper
+      ports:
+        - protocol: TCP
+          port: 5000
