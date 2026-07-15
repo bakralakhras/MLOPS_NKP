@@ -10,3 +10,4 @@ resources:
 - aegis-platform-services-dashboard.yaml
 - mlflow-postgres-exporter.yaml
 - aegis-allow-mlflow-postgres-exporter.yaml
+- aegis-platform-overview-dashboard.yaml
