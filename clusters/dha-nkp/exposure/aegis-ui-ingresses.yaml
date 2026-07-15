@@ -1,0 +1,87 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mlflow
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  ingressClassName: kommander-traefik
+  rules:
+    - host: mlflow.aegis.ntnxlab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mlflow
+                port:
+                  name: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: airflow
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  ingressClassName: kommander-traefik
+  rules:
+    - host: airflow.aegis.ntnxlab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aegis-airflow-airflow-api-server
+                port:
+                  name: api-server
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-console
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  ingressClassName: kommander-traefik
+  rules:
+    - host: minio.aegis.ntnxlab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minio-console
+                port:
+                  name: console
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aegis-fraud-api
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  ingressClassName: kommander-traefik
+  rules:
+    - host: fraud-api.aegis.ntnxlab.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aegis-fraud-baseline-predictor
+                port:
+                  number: 80

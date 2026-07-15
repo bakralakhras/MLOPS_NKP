@@ -1,17 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 resources:
-  - serving/dev
-  - features
-  - airflow
-  - ml
-  - namespaces/aegis-namespaces.yaml
-  - quotas/aegis-resourcequotas.yaml
-  - limitranges/aegis-limitranges.yaml
-  - rbac/aegis-serviceaccounts.yaml
-  - rbac/aegis-basic-rbac.yaml
-  - networkpolicies/aegis-default-deny-ingress.yaml
-  - security
-  - data
-  - networkpolicies/airflow-to-mlflow-minio.yaml
+- serving/dev
+- features
+- airflow
+- ml
+- namespaces/aegis-namespaces.yaml
+- quotas/aegis-resourcequotas.yaml
+- limitranges/aegis-limitranges.yaml
+- rbac/aegis-serviceaccounts.yaml
+- rbac/aegis-basic-rbac.yaml
+- networkpolicies/aegis-default-deny-ingress.yaml
+- security
+- data
+- networkpolicies/airflow-to-mlflow-minio.yaml
+- exposure

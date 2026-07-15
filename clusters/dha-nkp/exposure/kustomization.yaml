@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - aegis-ui-ingresses.yaml
+  - aegis-ui-networkpolicies.yaml

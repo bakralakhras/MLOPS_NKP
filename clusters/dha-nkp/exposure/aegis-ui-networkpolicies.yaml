@@ -1,0 +1,93 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-traefik-to-mlflow
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mlflow
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kommander-default-workspace
+      ports:
+        - protocol: TCP
+          port: 5000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-traefik-to-airflow
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  podSelector:
+    matchLabels:
+      component: api-server
+      release: aegis-airflow-airflow
+      tier: airflow
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kommander-default-workspace
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-traefik-to-minio-console
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kommander-default-workspace
+      ports:
+        - protocol: TCP
+          port: 9001
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: aegis-allow-traefik-to-fraud-api
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+spec:
+  podSelector:
+    matchLabels:
+      app: isvc.aegis-fraud-baseline-predictor
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kommander-default-workspace
+      ports:
+        - protocol: TCP
+          port: 8080
