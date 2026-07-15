@@ -1,0 +1,32 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aegis-metoro-dashboard-reader
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+rules:
+  - apiGroups:
+      - observability.metoro.io
+    resources:
+      - metorodashboards
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: aegis-metoro-dashboard-reader
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: aegis-metoro-dashboard-reader
+subjects:
+  - kind: ServiceAccount
+    name: metoro-apiserver
+    namespace: metoro-hub

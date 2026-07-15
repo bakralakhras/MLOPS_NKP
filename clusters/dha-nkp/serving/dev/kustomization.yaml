@@ -8,3 +8,4 @@ resources:
   - aegis-fraud-baseline-servicemonitor.yaml
   - aegis-allow-metoro-mlserver-metrics.yaml
   - aegis-fraud-baseline-dashboard.yaml
+  - aegis-metoro-dashboard-reader-rbac.yaml
