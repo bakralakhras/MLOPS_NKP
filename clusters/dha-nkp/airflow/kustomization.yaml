@@ -10,3 +10,4 @@ resources:
 - airflow-statsd-servicemonitor.yaml
 - aegis-allow-metoro-to-airflow-metrics.yaml
 - aegis-pipelines-dashboard.yaml
+- airflow-postgres-exporter.yaml

@@ -8,3 +8,4 @@ resources:
 - mlflow-servicemonitor.yaml
 - aegis-allow-metoro-to-mlflow-metrics.yaml
 - aegis-platform-services-dashboard.yaml
+- mlflow-postgres-exporter.yaml
