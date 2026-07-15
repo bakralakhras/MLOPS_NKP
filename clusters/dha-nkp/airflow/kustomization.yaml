@@ -9,3 +9,4 @@ resources:
 - airflow-phase6-feature-pipeline-dag-configmap.yaml
 - airflow-statsd-servicemonitor.yaml
 - aegis-allow-metoro-to-airflow-metrics.yaml
+- aegis-pipelines-dashboard.yaml

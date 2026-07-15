@@ -1,0 +1,249 @@
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroDashboard
+metadata:
+  name: aegis-pipelines
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/name: aegis-pipelines
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: aegis
+    aegis.io/environment: dev
+    aegis.io/phase: "8"
+spec:
+  content:
+    title: Aegis Pipelines
+    description: Airflow scheduler, executor, DAG-processing, pool, and workload health.
+    widgets:
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 0, w: 3, h: 4}
+        stat:
+          title: Scheduler Heartbeat
+          description: One means the scheduler produced heartbeats during the last five minutes.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'sum(increase(airflow_scheduler_heartbeat[5m])) > bool 0'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 3, "y": 0, w: 3, h: 4}
+        stat:
+          title: DAG Processor Heartbeat
+          description: One means the DAG processor produced heartbeats during the last five minutes.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'sum(increase(airflow_dag_processor_heartbeat[5m])) > bool 0'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 0, w: 3, h: 4}
+        stat:
+          title: DAG Import Errors
+          description: Current number of DAG import errors.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'max(airflow_dag_processing_import_errors)'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: stat
+        position:
+          type: absolute
+          absolute: {x: 9, "y": 0, w: 3, h: 4}
+        stat:
+          title: Queued Tasks
+          description: Tasks currently waiting in the executor.
+          expression:
+            queryMode: promql
+            reduceAggregation: max
+            promQLQuery:
+              query: 'max(airflow_executor_queued_tasks)'
+              bucketMode: auto
+              autoBucketStrategy: metoro
+          displaySettings:
+            globalSettings:
+              valuePrecision: 0
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 4, w: 6, h: 7}
+        chart:
+          title: Executor Workload
+          description: Running, queued, and available executor capacity.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_executor_running_tasks)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Running
+              - query: 'max(airflow_executor_queued_tasks)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Queued
+              - query: 'max(airflow_executor_open_slots)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Open slots
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 4, w: 6, h: 7}
+        chart:
+          title: Running DAG Runs
+          description: DAG runs currently handled by the scheduler.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_scheduler_dagruns_running)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Running DAG runs
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 11, w: 6, h: 7}
+        chart:
+          title: Scheduler Loop Duration
+          description: Scheduler loop duration reported by Airflow.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_scheduler_scheduler_loop_duration{quantile="0.5"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P50
+                  unitOverride: seconds
+              - query: 'max(airflow_scheduler_scheduler_loop_duration{quantile="0.99"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P99
+                  unitOverride: seconds
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 11, w: 6, h: 7}
+        chart:
+          title: DAG Processing Duration
+          description: Time spent processing Airflow DAG files.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_dag_processing_last_duration{quantile="0.5"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P50
+                  unitOverride: seconds
+              - query: 'max(airflow_dag_processing_last_duration{quantile="0.99"})'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: P99
+                  unitOverride: seconds
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 18, w: 6, h: 7}
+        chart:
+          title: Default Pool Capacity
+          description: Slot usage in the default Airflow pool.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_pool_running_slots_default_pool)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Running
+              - query: 'max(airflow_pool_queued_slots_default_pool)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Queued
+              - query: 'max(airflow_pool_open_slots)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Open
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 6, "y": 18, w: 6, h: 7}
+        chart:
+          title: Scheduler Pressure
+          description: Executable and starving tasks reported by the scheduler.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'max(airflow_scheduler_tasks_executable)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Executable
+              - query: 'max(airflow_scheduler_tasks_starving)'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Starving
+
+      - type: chart
+        position:
+          type: absolute
+          absolute: {x: 0, "y": 25, w: 12, h: 7}
+        chart:
+          title: Airflow Pod Restarts
+          description: Container restarts across the Airflow namespace.
+          chartType: line
+          expression:
+            queryMode: promql
+            promQLQueries:
+              - query: 'sum by (pod) (increase(kube_pod_container_status_restarts_total{namespace="aegis-airflow"}[15m]))'
+                bucketMode: auto
+                autoBucketStrategy: metoro
+                displaySettings:
+                  label: Restarts
+  settings:
+    layoutVersion: 2
+    defaultTimeRange: 1h
+    hideGlobalEnvironmentSelector: false
