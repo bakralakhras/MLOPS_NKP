@@ -1,0 +1,329 @@
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-predictor-unavailable
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: critical
+spec:
+  displayName: Aegis Predictor Unavailable
+  description: The fraud inference service is not exposing successful request metrics.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'max(up{service="aegis-fraud-baseline-metrics"})'
+        bucketSize: 60
+    evaluationRules:
+      - name: Predictor unavailable
+        type: static
+        static:
+          operators:
+            - operator: lessThan
+              threshold: 1
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 3
+            missingDatapointBehavior: breaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-inference-high-failure-rate
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: warning
+spec:
+  displayName: Aegis Inference Failure Rate High
+  description: More than five percent of model inference requests are failing.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: '100 * sum(rate(model_infer_request_failure_total{model="aegis-fraud-baseline"}[5m])) / clamp_min(sum(rate(model_infer_request_success_total{model="aegis-fraud-baseline"}[5m])) + sum(rate(model_infer_request_failure_total{model="aegis-fraud-baseline"}[5m])), 0.001)'
+        bucketSize: 60
+    evaluationRules:
+      - name: Failure rate above five percent
+        type: static
+        static:
+          operators:
+            - operator: greaterThan
+              threshold: 5
+          persistenceSettings:
+            datapointsInEvaluationWindow: 5
+            datapointsToAlarm: 3
+            missingDatapointBehavior: notBreaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-inference-high-latency
+  namespace: aegis-serving-dev
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: warning
+spec:
+  displayName: Aegis Inference P95 Latency High
+  description: Inference p95 latency has exceeded 500 milliseconds.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'histogram_quantile(0.95, sum by (le) (rate(rest_server_request_duration_seconds_bucket{method="POST"}[5m])))'
+        bucketSize: 60
+    evaluationRules:
+      - name: P95 latency above 500ms
+        type: static
+        static:
+          operators:
+            - operator: greaterThan
+              threshold: 0.5
+          persistenceSettings:
+            datapointsInEvaluationWindow: 10
+            datapointsToAlarm: 5
+            missingDatapointBehavior: notBreaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-airflow-scheduler-missing
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: critical
+spec:
+  displayName: Aegis Airflow Scheduler Heartbeat Missing
+  description: No Airflow scheduler heartbeat has been observed.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'sum(increase(airflow_scheduler_heartbeat[5m]))'
+        bucketSize: 60
+    evaluationRules:
+      - name: Scheduler heartbeat absent
+        type: static
+        static:
+          operators:
+            - operator: lessThanOrEqual
+              threshold: 0
+          persistenceSettings:
+            datapointsInEvaluationWindow: 5
+            datapointsToAlarm: 3
+            missingDatapointBehavior: breaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-airflow-dag-import-errors
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: warning
+spec:
+  displayName: Aegis Airflow DAG Import Errors
+  description: One or more Airflow DAG files cannot be imported.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'max(airflow_dag_processing_import_errors)'
+        bucketSize: 60
+    evaluationRules:
+      - name: DAG import errors detected
+        type: static
+        static:
+          operators:
+            - operator: greaterThan
+              threshold: 0
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 2
+            missingDatapointBehavior: notBreaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-mlflow-unavailable
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: critical
+spec:
+  displayName: Aegis MLflow Unavailable
+  description: MLflow metrics are missing or unavailable.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'max(mlflow_exporter_info)'
+        bucketSize: 60
+    evaluationRules:
+      - name: MLflow unavailable
+        type: static
+        static:
+          operators:
+            - operator: lessThan
+              threshold: 1
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 3
+            missingDatapointBehavior: breaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-minio-unhealthy
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: critical
+spec:
+  displayName: Aegis MinIO Cluster Unhealthy
+  description: The MinIO cluster health metric reports an unhealthy state.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'min(minio_cluster_health_status{aegis_component="minio"})'
+        bucketSize: 60
+    evaluationRules:
+      - name: MinIO cluster unhealthy
+        type: static
+        static:
+          operators:
+            - operator: lessThan
+              threshold: 1
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 3
+            missingDatapointBehavior: breaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-minio-capacity-high
+  namespace: aegis-data
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: warning
+spec:
+  displayName: Aegis MinIO Capacity High
+  description: More than eighty percent of usable MinIO capacity is consumed.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: '100 * (1 - max(minio_cluster_capacity_usable_free_bytes{aegis_component="minio"}) / clamp_min(max(minio_cluster_capacity_usable_total_bytes{aegis_component="minio"}), 1))'
+        bucketSize: 300
+    evaluationRules:
+      - name: MinIO capacity above eighty percent
+        type: static
+        static:
+          operators:
+            - operator: greaterThan
+              threshold: 80
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 3
+            missingDatapointBehavior: notBreaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-airflow-postgres-unavailable
+  namespace: aegis-airflow
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: critical
+spec:
+  displayName: Aegis Airflow PostgreSQL Unavailable
+  description: The Airflow metadata database cannot be reached.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'max(pg_up{aegis_component="airflow-postgres"})'
+        bucketSize: 60
+    evaluationRules:
+      - name: Airflow database unavailable
+        type: static
+        static:
+          operators:
+            - operator: lessThan
+              threshold: 1
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 3
+            missingDatapointBehavior: breaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-mlflow-postgres-unavailable
+  namespace: aegis-ml
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: critical
+spec:
+  displayName: Aegis MLflow PostgreSQL Unavailable
+  description: The MLflow tracking database cannot be reached.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'max(pg_up{aegis_component="mlflow-postgres"})'
+        bucketSize: 60
+    evaluationRules:
+      - name: MLflow database unavailable
+        type: static
+        static:
+          operators:
+            - operator: lessThan
+              threshold: 1
+          persistenceSettings:
+            datapointsInEvaluationWindow: 3
+            datapointsToAlarm: 3
+            missingDatapointBehavior: breaching
+---
+apiVersion: observability.metoro.io/v1alpha1
+kind: MetoroAlert
+metadata:
+  name: aegis-pod-restarts
+  namespace: aegis-monitoring
+  labels:
+    app.kubernetes.io/part-of: aegis
+    aegis.io/phase: "8"
+    aegis.io/severity: warning
+spec:
+  displayName: Aegis Repeated Pod Restarts
+  description: Aegis containers have restarted repeatedly during the last fifteen minutes.
+  aiInvestigateOnFire: true
+  timeseries:
+    expression:
+      metoroQLTimeseries:
+        query: 'sum(increase(kube_pod_container_status_restarts_total{namespace=~"aegis-.*"}[15m]))'
+        bucketSize: 60
+    evaluationRules:
+      - name: Repeated container restarts
+        type: static
+        static:
+          operators:
+            - operator: greaterThan
+              threshold: 3
+          persistenceSettings:
+            datapointsInEvaluationWindow: 5
+            datapointsToAlarm: 2
+            missingDatapointBehavior: notBreaching

@@ -15,3 +15,4 @@ resources:
 - data
 - networkpolicies/airflow-to-mlflow-minio.yaml
 - exposure
+- monitoring
