@@ -11,3 +11,4 @@ resources:
 - aegis-allow-metoro-to-airflow-metrics.yaml
 - aegis-pipelines-dashboard.yaml
 - airflow-postgres-exporter.yaml
+- airflow-phase8-drift-monitor-dag-configmap.yaml
