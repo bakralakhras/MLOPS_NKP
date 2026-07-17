@@ -163,6 +163,29 @@ def main() -> int:
     baseline = load_parquet(filesystem, baseline_key)
     current = load_parquet(filesystem, CURRENT_KEY)
 
+    # Reconstruct derived features when the current Phase 6 dataset
+    # contains only their source columns.
+    if "amount_vs_customer_average" not in current.columns:
+        denominator = current["customer_avg_amount_30d"].clip(lower=1.0)
+        current["amount_vs_customer_average"] = (
+            current["amount"] / denominator
+        )
+
+    if "is_night_transaction" not in current.columns:
+        current["is_night_transaction"] = (
+            current["hour_of_day"].between(0, 5)
+        ).astype("int64")
+
+    if "is_high_velocity_customer" not in current.columns:
+        current["is_high_velocity_customer"] = (
+            current["customer_tx_count_1h"] > 5
+        ).astype("int64")
+
+    if "is_high_merchant_risk" not in current.columns:
+        current["is_high_merchant_risk"] = (
+            current["merchant_fraud_rate_30d"] > 0.15
+        ).astype("int64")
+
     missing_baseline = sorted(
         set(FEATURE_COLUMNS) - set(baseline.columns)
     )
