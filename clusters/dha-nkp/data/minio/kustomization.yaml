@@ -9,3 +9,4 @@ resources:
 - minio-allow-ml-access.yaml
 - minio-servicemonitor.yaml
 - aegis-allow-metoro-to-minio-metrics.yaml
+- phase8-drift-iam.yaml
