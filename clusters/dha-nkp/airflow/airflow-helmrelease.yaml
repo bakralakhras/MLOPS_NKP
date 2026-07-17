@@ -17,7 +17,7 @@ spec:
   chart:
     spec:
       chart: airflow
-      version: "1.22.0"
+      version: 1.22.0
       sourceRef:
         kind: HelmRepository
         name: apache-airflow
@@ -25,17 +25,13 @@ spec:
       interval: 10m
   values:
     fullnameOverride: airflow
-
     executor: KubernetesExecutor
     multiNamespaceMode: false
-
     defaultAirflowRepository: apache/airflow
-    defaultAirflowTag: "3.2.2"
-    airflowVersion: "3.2.2"
-
+    defaultAirflowTag: 3.2.2
+    airflowVersion: 3.2.2
     redis:
       enabled: false
-
     postgresql:
       enabled: true
       primary:
@@ -43,10 +39,8 @@ spec:
           enabled: true
           storageClass: nutanix-volume
           size: 10Gi
-
     pgbouncer:
       enabled: false
-
     statsd:
       enabled: true
       resources:
@@ -56,14 +50,11 @@ spec:
         limits:
           cpu: 250m
           memory: 256Mi
-
     flower:
       enabled: false
-
     logs:
       persistence:
         enabled: false
-
     triggerer:
       replicas: 1
       persistence:
@@ -75,42 +66,44 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-
     dags:
       persistence:
         enabled: false
       gitSync:
         enabled: false
-
     volumes:
-      - name: airflow-validation-dags
-        configMap:
-          name: airflow-validation-dags
-      - name: airflow-phase5-training-dag
-        configMap:
-          name: airflow-phase5-training-dag
-      - name: airflow-phase6-feature-pipeline-dag
-        configMap:
-          name: airflow-phase6-feature-pipeline-dag
-
+    - name: airflow-validation-dags
+      configMap:
+        name: airflow-validation-dags
+    - name: airflow-phase5-training-dag
+      configMap:
+        name: airflow-phase5-training-dag
+    - name: airflow-phase6-feature-pipeline-dag
+      configMap:
+        name: airflow-phase6-feature-pipeline-dag
+    - name: airflow-phase8-drift-monitor-dag
+      configMap:
+        name: airflow-phase8-drift-monitor-dag
     volumeMounts:
-      - name: airflow-validation-dags
-        mountPath: /opt/airflow/dags/aegis_phase_4_validation_dag.py
-        subPath: aegis_phase_4_validation_dag.py
-        readOnly: true
-      - name: airflow-phase5-training-dag
-        mountPath: /opt/airflow/dags/aegis_phase_5_training_dag.py
-        subPath: aegis_phase_5_training_dag.py
-        readOnly: true
-      - name: airflow-phase6-feature-pipeline-dag
-        mountPath: /opt/airflow/dags/aegis_phase_6_feature_pipeline_dag.py
-        subPath: aegis_phase_6_feature_pipeline_dag.py
-        readOnly: true
-
+    - name: airflow-validation-dags
+      mountPath: /opt/airflow/dags/aegis_phase_4_validation_dag.py
+      subPath: aegis_phase_4_validation_dag.py
+      readOnly: true
+    - name: airflow-phase5-training-dag
+      mountPath: /opt/airflow/dags/aegis_phase_5_training_dag.py
+      subPath: aegis_phase_5_training_dag.py
+      readOnly: true
+    - name: airflow-phase6-feature-pipeline-dag
+      mountPath: /opt/airflow/dags/aegis_phase_6_feature_pipeline_dag.py
+      subPath: aegis_phase_6_feature_pipeline_dag.py
+      readOnly: true
+    - name: airflow-phase8-drift-monitor-dag
+      mountPath: /opt/airflow/dags/aegis_phase_8_drift_monitor_dag.py
+      subPath: aegis_phase_8_drift_monitor_dag.py
+      readOnly: true
     env:
-      - name: AIRFLOW__CORE__LOAD_EXAMPLES
-        value: "False"
-
+    - name: AIRFLOW__CORE__LOAD_EXAMPLES
+      value: 'False'
     migrateDatabaseJob:
       enabled: true
       useHelmHooks: false
@@ -122,7 +115,6 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-
     createUserJob:
       useHelmHooks: false
       ttlSecondsAfterFinished: 300
@@ -133,7 +125,6 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-
     apiServer:
       replicas: 1
       service:
@@ -145,7 +136,6 @@ spec:
         limits:
           cpu: 1000m
           memory: 1Gi
-
     webserver:
       replicas: 1
       service:
@@ -157,7 +147,6 @@ spec:
         limits:
           cpu: 1000m
           memory: 1Gi
-
     scheduler:
       replicas: 1
       resources:
@@ -167,7 +156,6 @@ spec:
         limits:
           cpu: 1000m
           memory: 1Gi
-
     dagProcessor:
       replicas: 1
       resources:
@@ -177,7 +165,6 @@ spec:
         limits:
           cpu: 500m
           memory: 512Mi
-
     workers:
       resources:
         requests:
