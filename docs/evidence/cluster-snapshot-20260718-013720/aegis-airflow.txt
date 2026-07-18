@@ -1,0 +1,74 @@
+NAME                                                      READY   STATUS      RESTARTS   AGE
+pod/aegis-airflow-airflow-api-server-b8b9bb597-qgg8t      1/1     Running     0          19h
+pod/aegis-airflow-airflow-dag-processor-bc8c4bbc5-mngzk   2/2     Running     0          19h
+pod/aegis-airflow-airflow-postgresql-0                    1/1     Running     0          10d
+pod/aegis-airflow-airflow-scheduler-78d5848f79-fn7cz      2/2     Running     0          19h
+pod/aegis-airflow-airflow-statsd-5b559c9489-d45p6         1/1     Running     0          2d23h
+pod/aegis-airflow-airflow-triggerer-7869c54c5c-9lldk      2/2     Running     0          19h
+pod/airflow-postgres-exporter-74ff79c96c-wj9wr            1/1     Running     0          2d23h
+pod/phase5-training-smoke-wmz2d                           0/1     Completed   0          9d
+pod/phase8-airflow-metrics-check                          0/1     Completed   0          2d23h
+pod/phase8-airflow-metrics-inventory                      0/1     Completed   0          2d23h
+
+NAME                                          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/aegis-airflow-airflow-api-server      ClusterIP   10.96.117.141    <none>        8080/TCP            10d
+service/aegis-airflow-airflow-postgresql      ClusterIP   10.102.65.48     <none>        5432/TCP            10d
+service/aegis-airflow-airflow-postgresql-hl   ClusterIP   None             <none>        5432/TCP            10d
+service/aegis-airflow-airflow-statsd          ClusterIP   10.102.117.155   <none>        9125/UDP,9102/TCP   2d23h
+service/aegis-airflow-airflow-triggerer       ClusterIP   None             <none>        8794/TCP            10d
+service/airflow-postgres-exporter             ClusterIP   10.110.214.103   <none>        9187/TCP            2d23h
+
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/aegis-airflow-airflow-api-server      1/1     1            1           10d
+deployment.apps/aegis-airflow-airflow-dag-processor   1/1     1            1           10d
+deployment.apps/aegis-airflow-airflow-scheduler       1/1     1            1           10d
+deployment.apps/aegis-airflow-airflow-statsd          1/1     1            1           2d23h
+deployment.apps/aegis-airflow-airflow-triggerer       1/1     1            1           10d
+deployment.apps/airflow-postgres-exporter             1/1     1            1           2d23h
+
+NAME                                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/aegis-airflow-airflow-api-server-5448d59865      0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-api-server-564d67cc75      0         0         0       4d
+replicaset.apps/aegis-airflow-airflow-api-server-57dc5d894c      0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-api-server-5cc8c8b5cf      0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-api-server-656cdb6b75      0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-api-server-65b6d7c7b7      0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-api-server-669749b99       0         0         0       2d23h
+replicaset.apps/aegis-airflow-airflow-api-server-7bc5c6d67b      0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-api-server-85b985bb5       0         0         0       5d1h
+replicaset.apps/aegis-airflow-airflow-api-server-b8b9bb597       1         1         1       19h
+replicaset.apps/aegis-airflow-airflow-dag-processor-6d6967d97c   0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-dag-processor-6d9db687c8   0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-dag-processor-76b5574c58   0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-dag-processor-77d8b5cb94   0         0         0       2d23h
+replicaset.apps/aegis-airflow-airflow-dag-processor-78bb4f4bd    0         0         0       4d
+replicaset.apps/aegis-airflow-airflow-dag-processor-8648866f6c   0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-dag-processor-9f66785f9    0         0         0       5d1h
+replicaset.apps/aegis-airflow-airflow-dag-processor-bc8c4bbc5    1         1         1       19h
+replicaset.apps/aegis-airflow-airflow-scheduler-5f57ccd99f       0         0         0       4d
+replicaset.apps/aegis-airflow-airflow-scheduler-64bb45c8df       0         0         0       2d23h
+replicaset.apps/aegis-airflow-airflow-scheduler-674dc5d557       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-scheduler-6c8f94dc4d       0         0         0       5d1h
+replicaset.apps/aegis-airflow-airflow-scheduler-6d667d6c44       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-scheduler-75b46c59c7       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-scheduler-7676b677d        0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-scheduler-776db69849       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-scheduler-78d5848f79       1         1         1       19h
+replicaset.apps/aegis-airflow-airflow-scheduler-84c7d797cb       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-scheduler-c7b4ddd97        0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-statsd-5b559c9489          1         1         1       2d23h
+replicaset.apps/aegis-airflow-airflow-triggerer-5bf85bcb7d       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-triggerer-5f5bf5d646       0         0         0       2d23h
+replicaset.apps/aegis-airflow-airflow-triggerer-6548c86dcc       0         0         0       5d1h
+replicaset.apps/aegis-airflow-airflow-triggerer-6b488b66d7       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-triggerer-748cb47895       0         0         0       10d
+replicaset.apps/aegis-airflow-airflow-triggerer-7869c54c5c       1         1         1       19h
+replicaset.apps/aegis-airflow-airflow-triggerer-8854d976d        0         0         0       4d
+replicaset.apps/airflow-postgres-exporter-74ff79c96c             1         1         1       2d23h
+replicaset.apps/airflow-postgres-exporter-858c5c7897             0         0         0       2d23h
+
+NAME                                                READY   AGE
+statefulset.apps/aegis-airflow-airflow-postgresql   1/1     10d
+
+NAME                              STATUS     COMPLETIONS   DURATION   AGE
+job.batch/phase5-training-smoke   Complete   1/1           31s        9d

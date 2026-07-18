@@ -1,0 +1,34 @@
+Captured: 2026-07-18T01:37:20-07:00
+Branch: main
+Commit: 572323eab68df985d7363331f6391b84623fa2b4
+
+572323e (HEAD -> main, origin/main) fix(phase8): reconstruct derived drift features
+1fa0e82 fix(phase8): mount drift DAG in Airflow
+b69e431 feat(phase8): add scheduled feature drift monitoring
+cceae95 fix(phase8): version drift IAM job for immutable update
+aadfe33 fix(phase8): correct MinIO drift policy conditions
+928b520 feat(phase8): grant drift monitor read access to training baseline
+77f2849 fix(phase8): make scheduler absence alert deterministic
+328cb73 feat(phase8): add native Metoro operational alerts
+56d88a3 fix(phase8): include platform overview dashboard
+cd10da9 feat(phase8): add Aegis platform overview dashboard
+916ded3 feat(phase8): finalize platform services dashboard
+321adfc fix(phase8): allow MLflow postgres exporter database access
+2a9427a fix: remove null httpGet handler causing probe validation error
+58854fe feat(phase8): add PostgreSQL observability
+710348e feat(phase8): add Aegis pipeline operations dashboard
+8ccc4e7 feat(phase8): enable Airflow Prometheus metrics
+ad98b7a feat(phase8): expose Aegis services through Traefik
+611b277 feat(phase8): expose MinIO console through Traefik
+53dcce1 fix(phase8): scrape MinIO cluster metrics
+31edb66 feat(phase8): expose MinIO metrics to Metoro
+802bed3 feat(phase8): add Aegis platform services dashboard
+79fe065 feat(phase8): scrape MLflow metrics with Metoro
+fa65e33 fix(phase8): correct MLflow Prometheus image tag
+8de71d8 fix(phase8): deploy Prometheus-enabled MLflow image
+ab62c92 fix(phase8): include Prometheus exporter in MLflow image
+f21d8a5 feat(phase8): enable MLflow Prometheus metrics
+54efb96 fix(phase8): allow Metoro to discover managed dashboards
+f509640 feat(phase8): add Metoro model serving dashboard
+cbc71c0 feat(phase8): expose MLServer metrics to Metoro
+c8b22ea fix: restore missing metadata.name on aegis-fraud-baseline ISVC

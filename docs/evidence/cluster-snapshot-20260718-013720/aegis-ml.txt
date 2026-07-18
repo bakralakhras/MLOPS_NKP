@@ -1,0 +1,28 @@
+NAME                                            READY   STATUS    RESTARTS   AGE
+pod/mlflow-bdbc7b9ff-tqpbh                      1/1     Running   0          3d
+pod/mlflow-postgres-0                           1/1     Running   0          12d
+pod/mlflow-postgres-exporter-6f5dcfd4f6-gqdwn   1/1     Running   0          2d20h
+
+NAME                               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/mlflow                     ClusterIP   10.107.244.145   <none>        5000/TCP   12d
+service/mlflow-postgres            ClusterIP   10.110.245.178   <none>        5432/TCP   12d
+service/mlflow-postgres-exporter   ClusterIP   10.111.116.86    <none>        9187/TCP   2d23h
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mlflow                     1/1     1            1           12d
+deployment.apps/mlflow-postgres-exporter   1/1     1            1           2d23h
+
+NAME                                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/mlflow-5469885578                     0         0         0       11d
+replicaset.apps/mlflow-574d9dd78c                     0         0         0       12d
+replicaset.apps/mlflow-77576d48b9                     0         0         0       12d
+replicaset.apps/mlflow-787b9bc8cb                     0         0         0       3d
+replicaset.apps/mlflow-84f6b44468                     0         0         0       3d
+replicaset.apps/mlflow-8d74f678c                      0         0         0       12d
+replicaset.apps/mlflow-bdbc7b9ff                      1         1         1       3d
+replicaset.apps/mlflow-postgres-exporter-6f5dcfd4f6   1         1         1       2d23h
+replicaset.apps/mlflow-postgres-exporter-7dfd45fd54   0         0         0       2d23h
+replicaset.apps/mlflow-postgres-exporter-8f9865fd5    0         0         0       2d20h
+
+NAME                               READY   AGE
+statefulset.apps/mlflow-postgres   1/1     12d

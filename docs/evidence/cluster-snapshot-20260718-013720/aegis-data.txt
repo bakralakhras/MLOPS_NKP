@@ -1,0 +1,22 @@
+NAME                               READY   STATUS      RESTARTS   AGE
+pod/minio-0                        1/1     Running     0          3d
+pod/minio-1                        1/1     Running     0          3d
+pod/minio-2                        1/1     Running     0          3d
+pod/minio-3                        1/1     Running     0          3d
+pod/phase6-feast-minio-iam-dh2gj   0/1     Completed   0          4d
+pod/phase7-minio-iam               0/1     Completed   0          3d20h
+pod/phase8-drift-iam-v2-dt9xj      0/1     Completed   0          20h
+pod/phase8-drift-report-check      0/1     Error       0          11h
+pod/phase8-minio-metrics-check     0/1     Completed   0          3d
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/minio            ClusterIP   10.99.59.153     <none>        9000/TCP            17d
+service/minio-console    ClusterIP   10.103.178.184   <none>        9001/TCP            17d
+service/minio-headless   ClusterIP   None             <none>        9000/TCP,9001/TCP   17d
+
+NAME                     READY   AGE
+statefulset.apps/minio   4/4     17d
+
+NAME                               STATUS     COMPLETIONS   DURATION   AGE
+job.batch/phase6-feast-minio-iam   Complete   1/1           7s         4d
+job.batch/phase8-drift-iam-v2      Complete   1/1           3s         20h

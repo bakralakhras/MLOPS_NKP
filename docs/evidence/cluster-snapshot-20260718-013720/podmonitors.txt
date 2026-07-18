@@ -1,0 +1,2 @@
+NAMESPACE                     NAME          AGE
+kommander-default-workspace   flux-system   23d

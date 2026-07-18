@@ -1,0 +1,15 @@
+NAME                                                  READY   STATUS    RESTARTS   AGE
+pod/aegis-fraud-baseline-predictor-77694d545b-xkmf7   1/1     Running   0          3d18h
+
+NAME                                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/aegis-fraud-baseline-metrics     ClusterIP   10.111.202.223   <none>        8082/TCP   3d1h
+service/aegis-fraud-baseline-predictor   ClusterIP   10.97.244.148    <none>        80/TCP     3d18h
+
+NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/aegis-fraud-baseline-predictor   1/1     1            1           3d18h
+
+NAME                                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/aegis-fraud-baseline-predictor-77694d545b   1         1         1       3d18h
+
+NAME                                                                 REFERENCE                                   TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/aegis-fraud-baseline-predictor   Deployment/aegis-fraud-baseline-predictor   cpu: 0%/80%   1         2         1          3d18h

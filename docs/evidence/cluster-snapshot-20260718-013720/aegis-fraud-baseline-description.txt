@@ -1,0 +1,66 @@
+Name:         aegis-fraud-baseline
+Namespace:    aegis-serving-dev
+Labels:       aegis.io/environment=dev
+              aegis.io/phase=7
+              app.kubernetes.io/part-of=aegis
+              kustomize.toolkit.fluxcd.io/name=aegis-dha-nkp
+              kustomize.toolkit.fluxcd.io/namespace=aegis-system
+Annotations:  aegis.io/runtime-revision: phase7-v2
+              serving.kserve.io/deploymentMode: RawDeployment
+              serving.kserve.io/secretName: aegis-model-storage
+API Version:  serving.kserve.io/v1beta1
+Kind:         InferenceService
+Metadata:
+  Creation Timestamp:  2026-07-14T14:10:56Z
+  Finalizers:
+    inferenceservice.finalizers
+  Generation:        1
+  Resource Version:  22126356
+  UID:               8d9ce824-1f77-45ec-8824-30bac1991fea
+Spec:
+  Predictor:
+    Max Replicas:  2
+    Min Replicas:  1
+    Model:
+      Model Format:
+        Name:            mlflow
+        Version:         2
+      Name:              
+      Protocol Version:  v2
+      Resources:
+        Limits:
+          Cpu:     1
+          Memory:  2Gi
+        Requests:
+          Cpu:             250m
+          Memory:          512Mi
+      Runtime:             aegis-mlflow-runtime
+      Storage Uri:         s3://aegis-mlflow-artifacts/3/8296806d2a764f9fa61929242f137213/artifacts/model
+    Service Account Name:  aegis-inference
+Status:
+  Address:
+    URL:  http://aegis-fraud-baseline-predictor.aegis-serving-dev.svc.cluster.local
+  Components:
+    Predictor:
+      URL:  http://aegis-fraud-baseline-predictor-aegis-serving-dev.example.com
+  Conditions:
+    Last Transition Time:  2026-07-14T14:10:56Z
+    Status:                True
+    Type:                  IngressReady
+    Last Transition Time:  2026-07-14T14:11:04Z
+    Status:                True
+    Type:                  PredictorReady
+    Last Transition Time:  2026-07-14T14:11:04Z
+    Status:                True
+    Type:                  Ready
+  Model Status:
+    Copies:
+      Failed Copies:  0
+      Total Copies:   1
+    States:
+      Active Model State:  Loaded
+      Target Model State:  Loaded
+    Transition Status:     UpToDate
+  Observed Generation:     1
+  URL:                     http://aegis-fraud-baseline-aegis-serving-dev.example.com
+Events:                    <none>

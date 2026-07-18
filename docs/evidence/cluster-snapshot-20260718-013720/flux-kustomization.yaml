@@ -1,0 +1,335 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"kustomize.toolkit.fluxcd.io/v1","kind":"Kustomization","metadata":{"annotations":{},"name":"aegis-dha-nkp","namespace":"aegis-system"},"spec":{"interval":"1m","path":"./clusters/dha-nkp","prune":true,"sourceRef":{"kind":"GitRepository","name":"aegis-mlops-platform"},"timeout":"3m","wait":true}}
+    reconcile.fluxcd.io/requestedAt: "1784323443"
+  creationTimestamp: "2026-06-29T07:28:27Z"
+  finalizers:
+  - finalizers.fluxcd.io
+  generation: 9
+  name: aegis-dha-nkp
+  namespace: aegis-system
+  resourceVersion: "26781523"
+  uid: ac29c524-fad8-4643-aef6-a116c0bc2686
+spec:
+  force: false
+  interval: 1m
+  path: ./clusters/dha-nkp
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: aegis-mlops-platform
+  suspend: false
+  timeout: 3m
+  wait: true
+status:
+  conditions:
+  - lastTransitionTime: "2026-07-18T08:36:18Z"
+    message: 'Applied revision: main@sha1:572323eab68df985d7363331f6391b84623fa2b4'
+    observedGeneration: 9
+    reason: ReconciliationSucceeded
+    status: "True"
+    type: Ready
+  - lastTransitionTime: "2026-07-18T08:36:18Z"
+    message: Health check passed in 356.425263ms
+    observedGeneration: 9
+    reason: Succeeded
+    status: "True"
+    type: Healthy
+  history:
+  - digest: sha256:c83995c6c87f2a1913f9d9161da5b580423bf1eed0879b2565c9c68840908b1d
+    firstReconciled: "2026-07-17T21:24:48Z"
+    lastReconciled: "2026-07-18T08:36:18Z"
+    lastReconciledDuration: 754.180167ms
+    lastReconciledStatus: ReconciliationSucceeded
+    metadata:
+      revision: main@sha1:572323eab68df985d7363331f6391b84623fa2b4
+    totalReconciliations: 666
+  - digest: sha256:01ff9c40fe1b024b973301b2f4b4d2b3bb69fd76b172ff9b3477324b515a586c
+    firstReconciled: "2026-07-17T12:48:42Z"
+    lastReconciled: "2026-07-17T21:24:04Z"
+    lastReconciledDuration: 621.849796ms
+    lastReconciledStatus: ReconciliationSucceeded
+    metadata:
+      revision: main@sha1:1fa0e82d97c5803e04313044f4278164be958dfd
+    totalReconciliations: 513
+  - digest: sha256:35dca12e33939a51f23149c105a89b3b3801be2fb402b89e114478b5f6b665a4
+    firstReconciled: "2026-07-17T12:28:58Z"
+    lastReconciled: "2026-07-17T12:46:49Z"
+    lastReconciledDuration: 625.568062ms
+    lastReconciledStatus: ReconciliationSucceeded
+    metadata:
+      revision: main@sha1:b69e431a386212de78227d1984dea6ca803d4a9a
+    totalReconciliations: 20
+  - digest: sha256:3b9690761a2f86ce982f8458e924d53574c3d16e3c69ef0c3990b197dc0857d3
+    firstReconciled: "2026-07-17T11:58:45Z"
+    lastReconciled: "2026-07-17T12:28:33Z"
+    lastReconciledDuration: 619.373874ms
+    lastReconciledStatus: ReconciliationSucceeded
+    metadata:
+      revision: main@sha1:cceae954cbd1d89bdfdcfc7ecb3ca59441f968a1
+    totalReconciliations: 33
+  - digest: sha256:7fe1ad1d682d952a92f689d7260be3ff8f9188601d273a1310f4ac5e59fb97b7
+    firstReconciled: "2026-07-17T11:22:11Z"
+    lastReconciled: "2026-07-17T11:58:21Z"
+    lastReconciledDuration: 280.948412ms
+    lastReconciledStatus: ReconciliationFailed
+    metadata:
+      revision: main@sha1:aadfe33edb8fcdb13582ad49b1029a951c245f2a
+    totalReconciliations: 37
+  inventory:
+    entries:
+    - id: _aegis-airflow__Namespace
+      v: v1
+    - id: _aegis-data__Namespace
+      v: v1
+    - id: _aegis-features__Namespace
+      v: v1
+    - id: _aegis-ml__Namespace
+      v: v1
+    - id: _aegis-monitoring__Namespace
+      v: v1
+    - id: _aegis-security__Namespace
+      v: v1
+    - id: _aegis-serving-dev__Namespace
+      v: v1
+    - id: _aegis-serving-prod__Namespace
+      v: v1
+    - id: _aegis-system__Namespace
+      v: v1
+    - id: _aegis-metoro-dashboard-reader_rbac.authorization.k8s.io_ClusterRole
+      v: v1
+    - id: _aegis-metoro-dashboard-reader_rbac.authorization.k8s.io_ClusterRoleBinding
+      v: v1
+    - id: aegis-airflow_aegis-airflow-quota__ResourceQuota
+      v: v1
+    - id: aegis-data_aegis-data-quota__ResourceQuota
+      v: v1
+    - id: aegis-features_aegis-features-quota__ResourceQuota
+      v: v1
+    - id: aegis-ml_aegis-ml-quota__ResourceQuota
+      v: v1
+    - id: aegis-monitoring_aegis-monitoring-quota__ResourceQuota
+      v: v1
+    - id: aegis-security_aegis-security-quota__ResourceQuota
+      v: v1
+    - id: aegis-serving-dev_aegis-serving-dev-quota__ResourceQuota
+      v: v1
+    - id: aegis-serving-prod_aegis-serving-prod-quota__ResourceQuota
+      v: v1
+    - id: aegis-system_aegis-system-quota__ResourceQuota
+      v: v1
+    - id: aegis-airflow_aegis-airflow__ServiceAccount
+      v: v1
+    - id: aegis-data_aegis-data-sa__ServiceAccount
+      v: v1
+    - id: aegis-data_aegis-stream-processor__ServiceAccount
+      v: v1
+    - id: aegis-features_aegis-feast__ServiceAccount
+      v: v1
+    - id: aegis-features_aegis-valkey__ServiceAccount
+      v: v1
+    - id: aegis-ml_aegis-mlflow__ServiceAccount
+      v: v1
+    - id: aegis-ml_aegis-training__ServiceAccount
+      v: v1
+    - id: aegis-monitoring_aegis-monitoring-reader__ServiceAccount
+      v: v1
+    - id: aegis-serving-dev_aegis-inference__ServiceAccount
+      v: v1
+    - id: aegis-serving-prod_aegis-inference__ServiceAccount
+      v: v1
+    - id: aegis-system_aegis-platform-admin__ServiceAccount
+      v: v1
+    - id: aegis-features_aegis-airflow-feature-pod-launcher_rbac.authorization.k8s.io_Role
+      v: v1
+    - id: aegis-system_aegis-read-only_rbac.authorization.k8s.io_Role
+      v: v1
+    - id: aegis-features_aegis-airflow-feature-pod-launcher_rbac.authorization.k8s.io_RoleBinding
+      v: v1
+    - id: aegis-system_aegis-platform-admin-read-only_rbac.authorization.k8s.io_RoleBinding
+      v: v1
+    - id: aegis-airflow_airflow-phase5-training-dag__ConfigMap
+      v: v1
+    - id: aegis-airflow_airflow-phase6-feature-pipeline-dag__ConfigMap
+      v: v1
+    - id: aegis-airflow_airflow-phase8-drift-monitor-dag__ConfigMap
+      v: v1
+    - id: aegis-airflow_airflow-validation-dags__ConfigMap
+      v: v1
+    - id: aegis-features_aegis-feature-config__ConfigMap
+      v: v1
+    - id: aegis-features_aegis-phase8-drift-script__ConfigMap
+      v: v1
+    - id: aegis-airflow_airflow-postgres-exporter__Service
+      v: v1
+    - id: aegis-data_minio__Service
+      v: v1
+    - id: aegis-data_minio-console__Service
+      v: v1
+    - id: aegis-data_minio-headless__Service
+      v: v1
+    - id: aegis-ml_mlflow__Service
+      v: v1
+    - id: aegis-ml_mlflow-postgres__Service
+      v: v1
+    - id: aegis-ml_mlflow-postgres-exporter__Service
+      v: v1
+    - id: aegis-serving-dev_aegis-fraud-baseline-metrics__Service
+      v: v1
+    - id: aegis-airflow_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-data_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-features_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-ml_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-monitoring_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-security_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-serving-dev_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-serving-prod_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-system_aegis-default-limits__LimitRange
+      v: v1
+    - id: aegis-airflow_airflow-postgres-exporter_apps_Deployment
+      v: v1
+    - id: aegis-ml_mlflow_apps_Deployment
+      v: v1
+    - id: aegis-ml_mlflow-postgres-exporter_apps_Deployment
+      v: v1
+    - id: aegis-data_minio_apps_StatefulSet
+      v: v1
+    - id: aegis-ml_mlflow-postgres_apps_StatefulSet
+      v: v1
+    - id: aegis-data_phase8-drift-iam-v2_batch_Job
+      v: v1
+    - id: aegis-airflow_airflow_helm.toolkit.fluxcd.io_HelmRelease
+      v: v2
+    - id: aegis-security_vault_helm.toolkit.fluxcd.io_HelmRelease
+      v: v2
+    - id: aegis-airflow_airflow-postgres_monitoring.coreos.com_ServiceMonitor
+      v: v1
+    - id: aegis-airflow_airflow-statsd_monitoring.coreos.com_ServiceMonitor
+      v: v1
+    - id: aegis-data_minio_monitoring.coreos.com_ServiceMonitor
+      v: v1
+    - id: aegis-ml_mlflow_monitoring.coreos.com_ServiceMonitor
+      v: v1
+    - id: aegis-ml_mlflow-postgres_monitoring.coreos.com_ServiceMonitor
+      v: v1
+    - id: aegis-serving-dev_aegis-fraud-baseline_monitoring.coreos.com_ServiceMonitor
+      v: v1
+    - id: aegis-airflow_airflow_networking.k8s.io_Ingress
+      v: v1
+    - id: aegis-data_minio-console_networking.k8s.io_Ingress
+      v: v1
+    - id: aegis-ml_mlflow_networking.k8s.io_Ingress
+      v: v1
+    - id: aegis-serving-dev_aegis-fraud-api_networking.k8s.io_Ingress
+      v: v1
+    - id: aegis-airflow_aegis-allow-airflow-internal_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-airflow_aegis-allow-metoro-to-airflow-metrics_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-airflow_aegis-allow-metoro-to-airflow-postgres-metrics_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-airflow_aegis-allow-traefik-to-airflow_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-airflow_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-airflow-to-minio_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-features-to-minio_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-metoro-to-minio-metrics_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-minio-internal_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-ml-to-minio_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-serving-dev-to-minio_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-allow-traefik-to-minio-console_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-data_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-features_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-airflow-to-mlflow_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-metoro-to-mlflow-metrics_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-metoro-to-mlflow-postgres-metrics_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-mlflow-internal_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-mlflow-postgres-exporter_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-mlflow-postgres-internal_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-allow-traefik-to-mlflow_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-ml_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-monitoring_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-security_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-serving-dev_aegis-allow-metoro-mlserver-metrics_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-serving-dev_aegis-allow-traefik-to-fraud-api_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-serving-dev_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-serving-prod_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-system_aegis-default-deny-ingress_networking.k8s.io_NetworkPolicy
+      v: v1
+    - id: aegis-airflow_aegis-airflow-dag-import-errors_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-airflow_aegis-airflow-postgres-unavailable_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-airflow_aegis-airflow-scheduler-missing_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-data_aegis-minio-capacity-high_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-data_aegis-minio-unhealthy_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-ml_aegis-mlflow-postgres-unavailable_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-ml_aegis-mlflow-unavailable_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-monitoring_aegis-pod-restarts_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-serving-dev_aegis-inference-high-failure-rate_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-serving-dev_aegis-inference-high-latency_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-serving-dev_aegis-predictor-unavailable_observability.metoro.io_MetoroAlert
+      v: v1alpha1
+    - id: aegis-airflow_aegis-pipelines_observability.metoro.io_MetoroDashboard
+      v: v1alpha1
+    - id: aegis-ml_aegis-platform-overview_observability.metoro.io_MetoroDashboard
+      v: v1alpha1
+    - id: aegis-ml_aegis-platform-services_observability.metoro.io_MetoroDashboard
+      v: v1alpha1
+    - id: aegis-serving-dev_aegis-fraud-baseline_observability.metoro.io_MetoroDashboard
+      v: v1alpha1
+    - id: aegis-serving-dev_aegis-fraud-baseline_serving.kserve.io_InferenceService
+      v: v1beta1
+    - id: aegis-serving-dev_aegis-mlflow-runtime_serving.kserve.io_ServingRuntime
+      v: v1alpha1
+    - id: aegis-system_apache-airflow_source.toolkit.fluxcd.io_HelmRepository
+      v: v1
+    - id: aegis-system_hashicorp_source.toolkit.fluxcd.io_HelmRepository
+      v: v1
+  lastAppliedRevision: main@sha1:572323eab68df985d7363331f6391b84623fa2b4
+  lastAttemptedRevision: main@sha1:572323eab68df985d7363331f6391b84623fa2b4
+  lastHandledReconcileAt: "1784323443"
+  observedGeneration: 9

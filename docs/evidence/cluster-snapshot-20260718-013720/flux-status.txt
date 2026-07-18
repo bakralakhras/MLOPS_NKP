@@ -1,0 +1,2 @@
+NAME            AGE   READY   STATUS
+aegis-dha-nkp   19d   True    Applied revision: main@sha1:572323eab68df985d7363331f6391b84623fa2b4

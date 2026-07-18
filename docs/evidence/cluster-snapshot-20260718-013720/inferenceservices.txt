@@ -1,0 +1,2 @@
+NAME                   URL                                                         READY   PREV   LATEST   PREVROLLEDOUTREVISION   LATESTREADYREVISION   AGE
+aegis-fraud-baseline   http://aegis-fraud-baseline-aegis-serving-dev.example.com   True                                                                  3d18h

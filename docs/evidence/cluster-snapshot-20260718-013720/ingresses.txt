@@ -1,0 +1,5 @@
+NAMESPACE                     NAME                                 CLASS               HOSTS                           ADDRESS        PORTS   AGE
+aegis-airflow                 airflow                              kommander-traefik   airflow.aegis.ntnxlab.local     10.8.246.154   80      2d23h
+aegis-data                    minio-console                        kommander-traefik   minio.aegis.ntnxlab.local       10.8.246.154   80      2d23h
+aegis-ml                      mlflow                               kommander-traefik   mlflow.aegis.ntnxlab.local      10.8.246.154   80      2d23h
+aegis-serving-dev             aegis-fraud-api                      kommander-traefik   fraud-api.aegis.ntnxlab.local   10.8.246.154   80      2d23h

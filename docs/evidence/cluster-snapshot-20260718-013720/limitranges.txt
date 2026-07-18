@@ -1,0 +1,10 @@
+NAMESPACE            NAME                   CREATED AT
+aegis-airflow        aegis-default-limits   2026-06-25T13:16:14Z
+aegis-data           aegis-default-limits   2026-06-25T13:16:14Z
+aegis-features       aegis-default-limits   2026-06-25T13:16:14Z
+aegis-ml             aegis-default-limits   2026-06-25T13:16:14Z
+aegis-monitoring     aegis-default-limits   2026-06-25T13:16:14Z
+aegis-security       aegis-default-limits   2026-06-25T13:16:14Z
+aegis-serving-dev    aegis-default-limits   2026-06-25T13:16:14Z
+aegis-serving-prod   aegis-default-limits   2026-06-25T13:16:14Z
+aegis-system         aegis-default-limits   2026-06-25T13:16:14Z

@@ -1,0 +1,10 @@
+NAME                                    READY   STATUS      RESTARTS   AGE
+pod/phase6-feast-apply-validate-5zmbd   0/1     Completed   0          4d1h
+pod/phase6-feast-iam-validation-75kkz   0/1     Completed   0          4d
+pod/phase6-feature-builder-hsnr4        0/1     Completed   0          4d1h
+pod/phase6-minio-network-debug          0/1     Completed   0          4d19h
+
+NAME                                    STATUS     COMPLETIONS   DURATION   AGE
+job.batch/phase6-feast-apply-validate   Complete   1/1           9s         4d1h
+job.batch/phase6-feast-iam-validation   Complete   1/1           4s         4d
+job.batch/phase6-feature-builder        Complete   1/1           36s        4d1h

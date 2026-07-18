@@ -1,0 +1,5 @@
+NAMESPACE           NAME                      TITLE   AGE
+aegis-airflow       aegis-pipelines                   2d23h
+aegis-ml            aegis-platform-overview           2d15h
+aegis-ml            aegis-platform-services           3d
+aegis-serving-dev   aegis-fraud-baseline              3d1h
