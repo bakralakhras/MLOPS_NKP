@@ -25,7 +25,7 @@ spec:
       runtime: aegis-mlflow-runtime
       protocolVersion: v2
 
-      storageUri: s3://aegis-mlflow-artifacts/3/72c647a4ee05497d902a1767a991f792/artifacts/model
+      storageUri: s3://aegis-mlflow-artifacts/3/62671fa607a0479d8c2fcc98ddb05256/artifacts/model
 
       resources:
         requests:
